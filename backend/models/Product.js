@@ -8,6 +8,12 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
+    shoeBrand: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     shoePrice: {
       type: Number,
       required: true,
@@ -30,9 +36,8 @@ const productSchema = new mongoose.Schema(
     },
 
     shoeRating: {
-      type: String,
+      type: Number,
       required: true,
-      trim: true,
     },
 
     shoeReviews: [

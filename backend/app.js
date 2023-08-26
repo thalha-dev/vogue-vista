@@ -9,6 +9,8 @@ const corsOptions = require("./config/corsOptions");
 
 const app = express();
 
+const productRoutes = require("./routes/productRoutes");
+
 // common middlewares
 
 app.use(morgan("dev"));
@@ -17,6 +19,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// routes
+
+app.use("/api/shoes", productRoutes);
 
 // Endpoint Not Found
 
