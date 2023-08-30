@@ -86,6 +86,20 @@ const uploadNewShoe = async (req, res, next) => {
   }
 };
 
+const getAllProducts = async (req, res, next) => {
+  try {
+    const products = await ProductModel.find().sort({ createdAt: -1 }).exec();
+    if (!products) {
+      throw createHttpError(404, "No products exists");
+    }
+
+    res.status(200).json({ products });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
+  getAllProducts,
 };
