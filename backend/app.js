@@ -10,6 +10,7 @@ const corsOptions = require("./config/corsOptions");
 const app = express();
 
 const productRoutes = require("./routes/productRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // common middlewares
 
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 // routes
 
+app.use("/api/users", userRoutes);
 app.use("/api/shoes", productRoutes);
 
 // Endpoint Not Found
