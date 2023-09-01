@@ -132,7 +132,31 @@ const login = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  const cookies = req.cookies;
+  try {
+    if (!cookies?.jwt) {
+      throw createHttpError(404, "JWT cookie doesn't exist");
+    }
+    const refreshToken = cookies.jwt;
+    const user = await UserModel.findOne({ refreshToken }).exec();
+
+    user.refreshToken = "";
+    await user.save();
+
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: "None",
+      // secure: true,
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   login,
+  logout,
 };
