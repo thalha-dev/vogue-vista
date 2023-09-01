@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 const UserModel = require("../models/User");
 const ROLES_LIST = require("../config/roles_list");
@@ -73,6 +74,65 @@ const signup = async (req, res, next) => {
   }
 };
 
+const login = async (req, res, next) => {
+  const username = req.body.username;
+  const passwodRaw = req.body.password;
+  try {
+    if (!username || !passwodRaw) {
+      throw createHttpError(400, "Required fields are missing");
+    }
+
+    const user = await UserModel.findOne({ username: username })
+      .select("+password +email")
+      .exec();
+
+    if (!user) {
+      throw createHttpError(401, "User doesn't exist. Signup instead.");
+    }
+
+    const passwordMatch = bcrypt.compare(passwodRaw, user.password);
+
+    if (!passwordMatch) {
+      throw createHttpError(401, "Invalid Credentials");
+    }
+
+    const roles = Object.values(user.roles);
+
+    const accessToken = jwt.sign(
+      {
+        UserInfo: {
+          username: user.username,
+          roles: roles,
+          userId: user._id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "120s" },
+    );
+
+    const refreshToken = jwt.sign(
+      { username: user.username },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "1d" },
+    );
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      // secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
+  login,
 };
