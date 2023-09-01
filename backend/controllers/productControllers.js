@@ -1,4 +1,6 @@
 const createHttpError = require("http-errors");
+const mongoose = require("mongoose");
+
 const ProductModel = require("../models/Product");
 const imagekit = require("../config/imagekitConf");
 
@@ -99,7 +101,79 @@ const getAllShoes = async (req, res, next) => {
   }
 };
 
+const updateShoeDetails = async (req, res, next) => {
+  const shoeId = req.body.shoeId;
+  const shoeName = req.body.shoeName;
+  const shoeBrand = req.body.shoeBrand;
+  const shoePrice = req.body.shoePrice;
+  const shoeSize = req.body.shoeSize;
+  const shoeColor = req.body.shoeColor;
+  const shoesAvailable = req.body.shoesAvailable;
+  const shoeRating = req.body.shoeRating;
+  const imageFiles = req.files;
+  try {
+    if (!shoeId) {
+      throw createHttpError(400, "Shoe ID is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(shoeId)) {
+      throw createHttpError(400, "Shoe ID is not in correct format");
+    }
+
+    const product = await ProductModel.findOne({ _id: shoeId }).exec();
+
+    if (!product) {
+      throw createHttpError(400, "Product not found!");
+    }
+
+    if (shoeName) product.shoeName = shoeName;
+    if (shoeBrand) product.shoeBrand = shoeBrand;
+    if (shoePrice) product.shoePrice = Number(shoePrice);
+    if (shoeSize) product.shoeSize = Number(shoeSize);
+    if (shoeColor) product.shoeColor = shoeColor;
+    if (shoesAvailable) product.shoesAvailable = Number(shoesAvailable);
+    if (shoeRating) product.shoeRating = Number(shoeRating);
+    if (imageFiles.length) {
+      // deleting old images from imagekit server
+      product.shoeImages.forEach((ob) => {
+        imagekit.deleteFile(ob.imageId);
+      });
+
+      // array of objects containing image url and id from imagekit
+      const imageArray = [];
+
+      // uploading images and generating URL
+      for (let i = 0; i < imageFiles.length; i++) {
+        const image = await imagekit.upload({
+          file: imageFiles[i].buffer,
+          fileName: imageFiles[i].originalname,
+          folder: "/products",
+        });
+
+        const imageUrl = imagekit.url({
+          path: image.filePath,
+        });
+        const imageInfo = {
+          imageUrl,
+          imageId: image.fileId,
+        };
+        imageArray.push(imageInfo);
+      }
+
+      product.shoeImages = imageArray;
+    }
+
+    // save the changes in db
+    const updatedProduct = await product.save();
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
+  updateShoeDetails,
 };
