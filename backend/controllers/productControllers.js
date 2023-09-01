@@ -86,7 +86,7 @@ const uploadNewShoe = async (req, res, next) => {
   }
 };
 
-const getAllProducts = async (req, res, next) => {
+const getAllShoes = async (req, res, next) => {
   try {
     const products = await ProductModel.find().sort({ createdAt: -1 }).exec();
     if (!products) {
@@ -101,5 +101,5 @@ const getAllProducts = async (req, res, next) => {
 
 module.exports = {
   uploadNewShoe,
-  getAllProducts,
+  getAllShoes,
 };

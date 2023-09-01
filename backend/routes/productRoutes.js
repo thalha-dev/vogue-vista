@@ -5,7 +5,7 @@ const uploadMiddleware = multer();
 
 const {
   uploadNewShoe,
-  getAllProducts,
+  getAllShoes,
 } = require("../controllers/productControllers");
 
 router.post(
@@ -14,6 +14,6 @@ router.post(
   uploadNewShoe,
 );
 
-router.get("/getAllProducts", getAllProducts);
+router.get("/getAllShoes", getAllShoes);
 
 module.exports = router;
