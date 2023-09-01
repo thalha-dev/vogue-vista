@@ -172,8 +172,39 @@ const updateShoeDetails = async (req, res, next) => {
   }
 };
 
+const deleteShoe = async (req, res, next) => {
+  const shoeId = req.body.shoeId;
+  try {
+    if (!shoeId) {
+      throw createHttpError(400, "Shoe ID is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(shoeId)) {
+      throw createHttpError(400, "Shoe ID is not in correct format");
+    }
+
+    const deletedProduct = await ProductModel.findOneAndDelete({
+      _id: shoeId,
+    }).exec();
+
+    if (!deletedProduct) {
+      throw createHttpError(400, "Product not found!");
+    }
+
+    // deleting product images for imagekit library
+    deletedProduct.shoeImages.forEach((ob) => {
+      imagekit.deleteFile(ob.imageId);
+    });
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
   updateShoeDetails,
+  deleteShoe,
 };

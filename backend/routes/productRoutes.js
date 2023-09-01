@@ -7,6 +7,7 @@ const {
   uploadNewShoe,
   getAllShoes,
   updateShoeDetails,
+  deleteShoe,
 } = require("../controllers/productControllers");
 
 router.post(
@@ -22,5 +23,7 @@ router.put(
   uploadMiddleware.array("shoeImages"),
   updateShoeDetails,
 );
+
+router.delete("/deleteShoe", deleteShoe);
 
 module.exports = router;
