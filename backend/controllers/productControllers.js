@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const ProductModel = require("../models/Product");
 const CartModel = require("../models/Cart");
+const WishListModel = require("../models/WishList");
 const imagekit = require("../config/imagekitConf");
 
 // function to upload a new shoe to product collection
@@ -378,6 +379,88 @@ const getAllShoesFromCart = async (req, res, next) => {
   }
 };
 
+// add a single product to cart
+const addToWishList = async (req, res, next) => {
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  try {
+    if (!userId) {
+      throw createHttpError(400, "User Id is not given");
+    }
+
+    if (!productId) {
+      throw createHttpError(400, "Product Id is not given");
+    }
+
+    // checking for existing wishlist
+    let userWishList = await WishListModel.findOne({
+      userId: userId,
+    }).exec();
+
+    // if not create one for the user
+    if (!userWishList) {
+      userWishList = await WishListModel.create({
+        userId: userId,
+      });
+    }
+
+    const productExists = await ProductModel.findOne({ _id: productId }).exec();
+
+    if (!productExists) {
+      throw createHttpError(400, "Invalid Product ID");
+    }
+
+    // add the product id only if doesn't exist before
+    if (!userWishList.wishListItems.includes(productId)) {
+      userWishList.wishListItems.push(productId);
+      await userWishList.save();
+    }
+
+    res.status(200).json({ userWishList });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// remove a single product from wishlist
+const removeFromWishList = async (req, res, next) => {
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  try {
+    if (!userId) {
+      throw createHttpError(400, "User Id is not given");
+    }
+
+    if (!productId) {
+      throw createHttpError(400, "Product Id is not given");
+    }
+
+    // checking for existing wishlist
+    const userWishList = await WishListModel.findOne({
+      userId: userId,
+    }).exec();
+
+    if (!userWishList) {
+      throw createHttpError(400, "WishList not initiated for this user");
+    }
+
+    // remove the product id only if does exist before
+    if (userWishList.wishListItems.includes(productId)) {
+      console.log("in");
+      userWishList.wishListItems = userWishList.wishListItems.filter(
+        (elem) => elem.toString() !== productId,
+      );
+      await userWishList.save();
+    }
+
+    res.status(200).json({ userWishList });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -387,4 +470,6 @@ module.exports = {
   addToCart,
   removeFromCart,
   getAllShoesFromCart,
+  addToWishList,
+  removeFromWishList,
 };
