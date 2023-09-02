@@ -88,6 +88,7 @@ const uploadNewShoe = async (req, res, next) => {
   }
 };
 
+// middleware to get all shoes from db
 const getAllShoes = async (req, res, next) => {
   try {
     const products = await ProductModel.find().sort({ createdAt: -1 }).exec();
@@ -101,6 +102,7 @@ const getAllShoes = async (req, res, next) => {
   }
 };
 
+// middleware to update an existing shoe details
 const updateShoeDetails = async (req, res, next) => {
   const shoeId = req.body.shoeId;
   const shoeName = req.body.shoeName;
@@ -172,6 +174,7 @@ const updateShoeDetails = async (req, res, next) => {
   }
 };
 
+// middleware to delete a shoe from db
 const deleteShoe = async (req, res, next) => {
   const shoeId = req.body.shoeId;
   try {

@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const UserModel = require("../models/User");
 const ROLES_LIST = require("../config/roles_list");
 
+// middleware for user signup
 const signup = async (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
@@ -69,6 +70,7 @@ const signup = async (req, res, next) => {
   }
 };
 
+// middleware for user login
 const login = async (req, res, next) => {
   const username = req.body.username;
   const passwodRaw = req.body.password;
@@ -127,6 +129,7 @@ const login = async (req, res, next) => {
   }
 };
 
+// middleware for user logout
 const logout = async (req, res, next) => {
   const cookies = req.cookies;
   try {
@@ -150,6 +153,7 @@ const logout = async (req, res, next) => {
   }
 };
 
+// middleware for refresh the access token
 const refreshAccessToken = async (req, res, next) => {
   const refreshToken = req.cookies?.jwt;
   try {
@@ -192,6 +196,7 @@ const refreshAccessToken = async (req, res, next) => {
   }
 };
 
+// middleware to get all user details
 const getAllUsers = async (req, res, next) => {
   try {
     const allUsers = await UserModel.find({
@@ -211,6 +216,7 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+// middleware to get all Individual details including admin/admins
 const getAllIndividuals = async (req, res, next) => {
   try {
     const allIndividuals = await UserModel.find({});
@@ -225,6 +231,7 @@ const getAllIndividuals = async (req, res, next) => {
   }
 };
 
+// middleware to delete an individual account
 const deleteIndividualAccount = async (req, res, next) => {
   const individualId = req.body.individualId;
   try {

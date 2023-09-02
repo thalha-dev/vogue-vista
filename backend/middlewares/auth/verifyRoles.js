@@ -10,6 +10,7 @@ const verifyRoles = (...passedRoles) => {
 
       const allowedRoles = [...passedRoles];
 
+      // returns true if given roles contain any allowed roles
       const isAllowed = givenRoles
         .map((role) => {
           return allowedRoles.includes(role);

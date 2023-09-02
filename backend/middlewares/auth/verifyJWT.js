@@ -19,6 +19,7 @@ const verifyJWT = (req, res, next) => {
         throw createHttpError(403, "Authentication Failed");
       }
 
+      // setting username and roles array in request
       req.user = decoded.UserInfo.username;
       req.roles = decoded.UserInfo.roles;
 
