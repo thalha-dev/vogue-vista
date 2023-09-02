@@ -12,14 +12,16 @@ const {
 
 const verifyJWT = require("../middlewares/auth/verifyJWT");
 
+router.get("/getAllShoes", verifyJWT, getAllShoes);
+
+// admin routes
+
 router.post(
   "/uploadNewShoe",
   verifyJWT,
   uploadMiddleware.array("shoeImages"),
   uploadNewShoe,
 );
-
-router.get("/getAllShoes", verifyJWT, getAllShoes);
 
 router.put(
   "/updateShoeDetails",

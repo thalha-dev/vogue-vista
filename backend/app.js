@@ -11,7 +11,6 @@ const app = express();
 
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
-const adminRoutes = require("./routes/adminRoutes");
 
 // common middlewares
 
@@ -26,7 +25,6 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/shoes", productRoutes);
-app.use("/api/admin", adminRoutes);
 
 // Endpoint Not Found
 
