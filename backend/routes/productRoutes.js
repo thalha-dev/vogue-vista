@@ -11,6 +11,8 @@ const {
 } = require("../controllers/productControllers");
 
 const verifyJWT = require("../middlewares/auth/verifyJWT");
+const verifyRoles = require("../middlewares/auth/verifyRoles");
+const ROLES_LIST = require("../config/roles_list");
 
 router.get("/getAllShoes", verifyJWT, getAllShoes);
 
@@ -19,6 +21,7 @@ router.get("/getAllShoes", verifyJWT, getAllShoes);
 router.post(
   "/uploadNewShoe",
   verifyJWT,
+  verifyRoles(ROLES_LIST.Admin),
   uploadMiddleware.array("shoeImages"),
   uploadNewShoe,
 );
@@ -26,10 +29,16 @@ router.post(
 router.put(
   "/updateShoeDetails",
   verifyJWT,
+  verifyRoles(ROLES_LIST.Admin),
   uploadMiddleware.array("shoeImages"),
   updateShoeDetails,
 );
 
-router.delete("/deleteShoe", verifyJWT, deleteShoe);
+router.delete(
+  "/deleteShoe",
+  verifyJWT,
+  verifyRoles(ROLES_LIST.Admin),
+  deleteShoe,
+);
 
 module.exports = router;
