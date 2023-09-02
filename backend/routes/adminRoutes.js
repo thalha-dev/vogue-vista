@@ -7,8 +7,10 @@ const {
   deleteIndividualAccount,
 } = require("../controllers/userControllers");
 
-router.get("/getAllUsers", getAllUsers);
-router.get("/getAllIndividuals", getAllIndividuals);
-router.post("/deleteIndividualAccount", deleteIndividualAccount);
+const verifyJWT = require("../middlewares/auth/verifyJWT");
+
+router.get("/getAllUsers", verifyJWT, getAllUsers);
+router.get("/getAllIndividuals", verifyJWT, getAllIndividuals);
+router.post("/deleteIndividualAccount", verifyJWT, deleteIndividualAccount);
 
 module.exports = router;

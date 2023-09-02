@@ -102,7 +102,7 @@ const login = async (req, res, next) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "120s" },
+      { expiresIn: "1h" },
     );
 
     const refreshToken = jwt.sign(
@@ -182,7 +182,7 @@ const refreshAccessToken = async (req, res, next) => {
             },
           },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "120s" },
+          { expiresIn: "1h" },
         );
         res.status(200).json({ accessToken });
       },

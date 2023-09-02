@@ -10,20 +10,24 @@ const {
   deleteShoe,
 } = require("../controllers/productControllers");
 
+const verifyJWT = require("../middlewares/auth/verifyJWT");
+
 router.post(
   "/uploadNewShoe",
+  verifyJWT,
   uploadMiddleware.array("shoeImages"),
   uploadNewShoe,
 );
 
-router.get("/getAllShoes", getAllShoes);
+router.get("/getAllShoes", verifyJWT, getAllShoes);
 
 router.put(
   "/updateShoeDetails",
+  verifyJWT,
   uploadMiddleware.array("shoeImages"),
   updateShoeDetails,
 );
 
-router.delete("/deleteShoe", deleteShoe);
+router.delete("/deleteShoe", verifyJWT, deleteShoe);
 
 module.exports = router;
