@@ -102,6 +102,30 @@ const getAllShoes = async (req, res, next) => {
   }
 };
 
+// middleware to get all shoes from db
+const getSingleShoe = async (req, res, next) => {
+  const shoeId = req.params.shoeId;
+  try {
+    if (!shoeId) {
+      throw createHttpError(400, "Shoe ID is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(shoeId)) {
+      throw createHttpError(400, "Shoe ID is not in correct format");
+    }
+
+    const product = await ProductModel.findOne({ _id: shoeId }).exec();
+
+    if (!product) {
+      throw createHttpError(404, "Article not found for the given ID");
+    }
+
+    res.status(200).json({ product });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // middleware to update an existing shoe details
 const updateShoeDetails = async (req, res, next) => {
   const shoeId = req.body.shoeId;
@@ -208,6 +232,7 @@ const deleteShoe = async (req, res, next) => {
 module.exports = {
   uploadNewShoe,
   getAllShoes,
+  getSingleShoe,
   updateShoeDetails,
   deleteShoe,
 };

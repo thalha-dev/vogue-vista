@@ -6,6 +6,7 @@ const uploadMiddleware = multer();
 const {
   uploadNewShoe,
   getAllShoes,
+  getSingleShoe,
   updateShoeDetails,
   deleteShoe,
 } = require("../controllers/productControllers");
@@ -15,6 +16,7 @@ const verifyRoles = require("../middlewares/auth/verifyRoles");
 const ROLES_LIST = require("../config/roles_list");
 
 router.get("/getAllShoes", verifyJWT, getAllShoes);
+router.get("/getSingleShoe/:shoeId", verifyJWT, getSingleShoe);
 
 // admin routes
 
