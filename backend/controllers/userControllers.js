@@ -149,8 +149,51 @@ const logout = async (req, res, next) => {
   }
 };
 
+const refreshAccessToken = async (req, res, next) => {
+  const refreshToken = req.cookies?.jwt;
+  try {
+    if (!refreshToken) {
+      throw createHttpError(401, "Refresh token is not given");
+    }
+
+    const user = await UserModel.findOne({ refreshToken }).exec();
+
+    if (!user) {
+      throw createHttpError(404, "No user has the provided token");
+    }
+
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (error, decoded) => {
+        if (error || user.username !== decoded.username) {
+          throw createHttpError(403, "Invalid token given");
+        }
+
+        const roles = Object.values(user.roles);
+
+        const accessToken = jwt.sign(
+          {
+            UserInfo: {
+              username: decoded.username,
+              roles: roles,
+              userId: user._id,
+            },
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: "120s" },
+        );
+        res.status(200).json({ accessToken });
+      },
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
+  refreshAccessToken,
 };
