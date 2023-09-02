@@ -2,6 +2,7 @@ const createHttpError = require("http-errors");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const UserModel = require("../models/User");
 const ROLES_LIST = require("../config/roles_list");
@@ -224,6 +225,31 @@ const getAllIndividuals = async (req, res, next) => {
   }
 };
 
+const deleteIndividualAccount = async (req, res, next) => {
+  const individualId = req.body.individualId;
+  try {
+    if (!individualId) {
+      throw createHttpError(400, "Individual ID is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(individualId)) {
+      throw createHttpError(400, "Individual ID is not in correct format");
+    }
+
+    const deletedAccountDetails = await UserModel.findOneAndDelete({
+      _id: individualId,
+    }).exec();
+
+    if (!deletedAccountDetails) {
+      throw createHttpError(404, "Individual not found");
+    }
+
+    res.status(200).json({ deletedAccountDetails });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -231,4 +257,5 @@ module.exports = {
   refreshAccessToken,
   getAllUsers,
   getAllIndividuals,
+  deleteIndividualAccount,
 };
