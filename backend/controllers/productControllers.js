@@ -240,8 +240,16 @@ const addToCart = async (req, res, next) => {
       throw createHttpError(400, "User Id is not given");
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw createHttpError(400, "User ID is not in correct format");
+    }
+
     if (!productId) {
       throw createHttpError(400, "Product Id is not given");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw createHttpError(400, "Product ID is not in correct format");
     }
 
     // checking for existing cart
@@ -263,10 +271,30 @@ const addToCart = async (req, res, next) => {
     }
 
     // add the product id only if doesn't exist before
-    if (!userCart.cartItems.includes(productId)) {
-      userCart.cartItems.push(productId);
-      await userCart.save();
+    let itemExistInCart = false;
+    let itemIndex = 0;
+
+    for (let i = 0; i < userCart.cartItems.length; i++) {
+      if (userCart.cartItems[i].shoe.toString() === productId) {
+        itemExistInCart = true;
+        itemIndex = i;
+      }
     }
+
+    if (itemExistInCart) {
+      if (
+        userCart.cartItems[itemIndex].shoeCount < productExists.shoesAvailable
+      ) {
+        userCart.cartItems[itemIndex].shoeCount++;
+      }
+    } else {
+      userCart.cartItems.push({
+        shoe: productId,
+        shoeCount: 1,
+      });
+    }
+
+    await userCart.save();
 
     res.status(200).json({ userCart });
   } catch (error) {
