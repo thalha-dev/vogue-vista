@@ -53,19 +53,13 @@ const signup = async (req, res, next) => {
 
     const passwodHashed = await bcrypt.hash(passwodRaw, 10);
 
-    const rolesGiven = {};
-
-    if (role === ROLES_LIST.Admin) {
-      rolesGiven.Admin = ROLES_LIST.Admin;
-    } else {
-      rolesGiven.User = ROLES_LIST.User;
-    }
-
     const newUser = await UserModel.create({
       username: username,
       email: email,
       password: passwodHashed,
-      roles: rolesGiven,
+      roles: {
+        User: ROLES_LIST.User,
+      },
     });
 
     res.status(201).json(newUser);
