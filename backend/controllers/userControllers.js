@@ -191,9 +191,44 @@ const refreshAccessToken = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const allUsers = await UserModel.find({
+      $and: [
+        { "roles.User": { $exists: true } },
+        { "roles.Admin": { $exists: false } },
+      ],
+    });
+
+    if (!allUsers) {
+      throw createHttpError(404, "No user exist");
+    }
+
+    res.status(200).json(allUsers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllIndividuals = async (req, res, next) => {
+  try {
+    const allIndividuals = await UserModel.find({});
+
+    if (!allIndividuals) {
+      throw createHttpError(404, "No One Exists!");
+    }
+
+    res.status(200).json(allIndividuals);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
   refreshAccessToken,
+  getAllUsers,
+  getAllIndividuals,
 };
