@@ -274,6 +274,43 @@ const addToCart = async (req, res, next) => {
   }
 };
 
+// remove a single product from cart
+const removeFromCart = async (req, res, next) => {
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  try {
+    if (!userId) {
+      throw createHttpError(400, "User Id is not given");
+    }
+
+    if (!productId) {
+      throw createHttpError(400, "Product Id is not given");
+    }
+
+    // checking for existing cart
+    const userCart = await CartModel.findOne({
+      userId: userId,
+    }).exec();
+
+    if (!userCart) {
+      throw createHttpError(400, "Cart not initiated for this user");
+    }
+
+    // remove the product id only if does exist before
+    if (userCart.cartItems.includes(productId)) {
+      userCart.cartItems = userCart.cartItems.filter(
+        (elem) => elem !== productId,
+      );
+      await userCart.save();
+    }
+
+    res.status(200).json({ userCart });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -281,4 +318,5 @@ module.exports = {
   updateShoeDetails,
   deleteShoe,
   addToCart,
+  removeFromCart,
 };
