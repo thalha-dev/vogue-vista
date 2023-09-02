@@ -357,6 +357,27 @@ const removeFromCart = async (req, res, next) => {
   }
 };
 
+// to get all the shoes saved in the cart
+const getAllShoesFromCart = async (req, res, next) => {
+  const userId = req.params.userId;
+  try {
+    // Find the cart and populate the 'shoe' field in 'cartItems'
+    const userCart = await CartModel.findOne({
+      userId: userId,
+    })
+      .populate("cartItems.shoe")
+      .exec();
+
+    if (!userCart) {
+      throw createHttpError(404, "Nothing in the cart");
+    }
+
+    res.status(200).json(userCart);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -365,4 +386,5 @@ module.exports = {
   deleteShoe,
   addToCart,
   removeFromCart,
+  getAllShoesFromCart,
 };
