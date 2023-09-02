@@ -14,6 +14,7 @@ const {
   getAllShoesFromCart,
   addToWishList,
   removeFromWishList,
+  getAllShoesFromWishList,
 } = require("../controllers/productControllers");
 
 const verifyJWT = require("../middlewares/auth/verifyJWT");
@@ -22,6 +23,11 @@ const ROLES_LIST = require("../config/roles_list");
 
 router.get("/getAllShoes", verifyJWT, getAllShoes);
 router.get("/getAllShoesFromCart/:userId", verifyJWT, getAllShoesFromCart);
+router.get(
+  "/getAllShoesFromWishList/:userId",
+  verifyJWT,
+  getAllShoesFromWishList,
+);
 router.get("/getSingleShoe/:shoeId", verifyJWT, getSingleShoe);
 router.post("/addToCart", verifyJWT, addToCart);
 router.post("/addToWishList", verifyJWT, addToWishList);

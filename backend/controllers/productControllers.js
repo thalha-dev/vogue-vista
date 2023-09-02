@@ -461,6 +461,27 @@ const removeFromWishList = async (req, res, next) => {
   }
 };
 
+// to get all the shoes saved in the cart
+const getAllShoesFromWishList = async (req, res, next) => {
+  const userId = req.params.userId;
+  try {
+    // Find the cart and populate the 'shoe' field in 'cartItems'
+    const userWishList = await WishListModel.findOne({
+      userId: userId,
+    })
+      .populate("wishListItems")
+      .exec();
+
+    if (!userWishList) {
+      throw createHttpError(404, "Nothing in the cart");
+    }
+
+    res.status(200).json(userWishList);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -472,4 +493,5 @@ module.exports = {
   getAllShoesFromCart,
   addToWishList,
   removeFromWishList,
+  getAllShoesFromWishList,
 };
