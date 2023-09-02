@@ -326,12 +326,30 @@ const removeFromCart = async (req, res, next) => {
     }
 
     // remove the product id only if does exist before
-    if (userCart.cartItems.includes(productId)) {
-      userCart.cartItems = userCart.cartItems.filter(
-        (elem) => elem !== productId,
-      );
-      await userCart.save();
+    let itemExistInCart = false;
+    let itemIndex = 0;
+
+    for (let i = 0; i < userCart.cartItems.length; i++) {
+      if (userCart.cartItems[i].shoe.toString() === productId) {
+        itemExistInCart = true;
+        itemIndex = i;
+      }
     }
+
+    if (!itemExistInCart) {
+      throw createHttpError(400, "Shoe doesn't exist in cart");
+    }
+
+    // remove the item if count less than 2 or else decrease the count
+    if (userCart.cartItems[itemIndex].shoeCount < 2) {
+      userCart.cartItems = userCart.cartItems.filter(
+        (o) => o.shoe.toString() !== productId,
+      );
+    } else {
+      userCart.cartItems[itemIndex].shoeCount--;
+    }
+
+    await userCart.save();
 
     res.status(200).json({ userCart });
   } catch (error) {
