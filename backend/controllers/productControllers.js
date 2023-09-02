@@ -2,6 +2,7 @@ const createHttpError = require("http-errors");
 const mongoose = require("mongoose");
 
 const ProductModel = require("../models/Product");
+const CartModel = require("../models/Cart");
 const imagekit = require("../config/imagekitConf");
 
 // function to upload a new shoe to product collection
@@ -229,10 +230,55 @@ const deleteShoe = async (req, res, next) => {
   }
 };
 
+// add a single product to cart
+const addToCart = async (req, res, next) => {
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  try {
+    if (!userId) {
+      throw createHttpError(400, "User Id is not given");
+    }
+
+    if (!productId) {
+      throw createHttpError(400, "Product Id is not given");
+    }
+
+    // checking for existing cart
+    let userCart = await CartModel.findOne({
+      userId: userId,
+    }).exec();
+
+    // if not create one for the user
+    if (!userCart) {
+      userCart = await CartModel.create({
+        userId: userId,
+      });
+    }
+
+    const productExists = await ProductModel.findOne({ _id: productId }).exec();
+
+    if (!productExists) {
+      throw createHttpError(400, "Invalid Product ID");
+    }
+
+    // add the product id only if doesn't exist before
+    if (!userCart.cartItems.includes(productId)) {
+      userCart.cartItems.push(productId);
+      await userCart.save();
+    }
+
+    res.status(200).json({ userCart });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
   getSingleShoe,
   updateShoeDetails,
   deleteShoe,
+  addToCart,
 };
