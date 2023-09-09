@@ -585,6 +585,43 @@ const stripePaymentIntent = async (req, res, next) => {
   }
 };
 
+const confirmOrder = async (req, res, next) => {
+  const paymentIntentId = req.body.paymentIntentId;
+  try {
+    if (!paymentIntentId) {
+      throw createHttpError(400, "Payment intent's ID is required");
+    }
+
+    const order = await OrderModel.findOneAndUpdate(
+      {
+        payment_intent: paymentIntentId,
+      },
+      {
+        $set: {
+          isOrderCompleted: true,
+        },
+      },
+    );
+
+    // updating product available count in db
+    for (let i = 0; i < order.productsInOrder.length; i++) {
+      const product = await ProductModel.findOne({
+        _id: order.productsInOrder[i].shoe,
+      }).exec();
+
+      if (product.shoesAvailable > 0) {
+        product.shoesAvailable = product.shoesAvailable - 1;
+      }
+
+      await product.save();
+    }
+
+    res.status(200).send("Order Success");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -598,4 +635,5 @@ module.exports = {
   removeFromWishList,
   getAllShoesFromWishList,
   stripePaymentIntent,
+  confirmOrder,
 };
