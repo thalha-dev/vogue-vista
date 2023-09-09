@@ -44,7 +44,7 @@ const uploadNewShoe = async (req, res, next) => {
     if (existingProductIndex || existingProductIndex === 0) {
       products[existingProductIndex].shoesAvailable++;
       await products[existingProductIndex].save();
-      res.status(200).json({ products });
+      res.status(200).json({ newProduct: products[existingProductIndex] });
     } else {
       if (!shoeBrand) {
         throw createHttpError(400, "Shoe name not given");
