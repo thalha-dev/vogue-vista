@@ -565,6 +565,18 @@ const stripePaymentIntent = async (req, res, next) => {
         .populate("cartItems.shoe")
         .exec();
 
+      for (let i = 0; i < userCart.cartItems.length; i++) {
+        if (
+          userCart.cartItems[i].shoeCount >
+          userCart.cartItems[i].shoe.shoesAvailable
+        ) {
+          userCart.cartItems[i].shoeCount =
+            userCart.cartItems[i].shoe.shoesAvailable;
+        }
+      }
+
+      await userCart.save();
+
       // calcucating price
       for (let i = 0; i < userCart.cartItems.length; i++) {
         const sp = Number(userCart.cartItems[i].shoe.shoePrice);
