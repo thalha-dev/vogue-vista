@@ -1,9 +1,11 @@
 const createHttpError = require("http-errors");
 const mongoose = require("mongoose");
+const stripeLibrary = require("stripe");
 
 const ProductModel = require("../models/Product");
 const CartModel = require("../models/Cart");
 const WishListModel = require("../models/WishList");
+const OrderModel = require("../models/Order");
 const imagekit = require("../config/imagekitConf");
 
 // function to upload a new shoe to product collection
@@ -482,6 +484,107 @@ const getAllShoesFromWishList = async (req, res, next) => {
   }
 };
 
+const stripePaymentIntent = async (req, res, next) => {
+  const id = req.body.id;
+  const userId = req.body.userId;
+  const orderType = req.body.orderType;
+  const stripe = stripeLibrary(process.env.STRIPE_SECRET_KEY);
+
+  try {
+    if (!id) {
+      throw createHttpError(400, "ID is required");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw createHttpError(400, "ID is not in correct format");
+    }
+
+    if (!userId) {
+      throw createHttpError(400, "User Id is not given");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw createHttpError(400, "User ID is not in correct format");
+    }
+
+    if (!orderType) {
+      throw createHttpError(400, "Order type is required");
+    }
+
+    let price = 0;
+    let singleProduct = null;
+    let userCart = null;
+
+    if (orderType === "single") {
+      // if given id is the product id
+      singleProduct = await ProductModel.findOne({
+        _id: id,
+      }).exec();
+
+      price += Number(singleProduct.shoePrice);
+    } else if (orderType === "cart") {
+      // if given id is the cart id
+      // Find the cart and populate the 'shoe' field in 'cartItems'
+      userCart = await CartModel.findOne({
+        _id: id,
+      })
+        .populate("cartItems.shoe")
+        .exec();
+
+      // calcucating price
+      for (let i = 0; i < userCart.cartItems.length; i++) {
+        const sp = Number(userCart.cartItems[i].shoe.shoePrice);
+        const count = Number(userCart.cartItems[i].shoeCount);
+        price += Number(sp * count);
+      }
+    }
+
+    // creating payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: price * 100,
+      currency: "inr",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    // to save in order collection
+    const productsInOrder = [];
+
+    if (singleProduct) {
+      productsInOrder.push({
+        shoe: singleProduct._id,
+        shoeCount: 1,
+      });
+    } else if (userCart) {
+      for (let i = 0; i < userCart.cartItems.length; i++) {
+        const ob = {
+          shoe: userCart.cartItems[i].shoe._id,
+          shoeCount: Number(userCart.cartItems[i].shoeCount),
+        };
+
+        productsInOrder.push(ob);
+      }
+    }
+
+    const newOrder = new OrderModel({
+      userId: userId,
+      productsInOrder: productsInOrder,
+      orderPrice: price,
+      payment_intent: paymentIntent.id,
+    });
+
+    await newOrder.save();
+
+    // sending client secret to client
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -494,4 +597,5 @@ module.exports = {
   addToWishList,
   removeFromWishList,
   getAllShoesFromWishList,
+  stripePaymentIntent,
 };

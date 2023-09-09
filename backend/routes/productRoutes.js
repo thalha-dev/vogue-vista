@@ -15,6 +15,7 @@ const {
   addToWishList,
   removeFromWishList,
   getAllShoesFromWishList,
+  stripePaymentIntent,
 } = require("../controllers/productControllers");
 
 const verifyJWT = require("../middlewares/auth/verifyJWT");
@@ -33,6 +34,7 @@ router.post("/addToCart", verifyJWT, addToCart);
 router.post("/addToWishList", verifyJWT, addToWishList);
 router.post("/removeFromCart", verifyJWT, removeFromCart);
 router.post("/removeFromWishList", verifyJWT, removeFromWishList);
+router.post("/stripePaymentIntent", verifyJWT, stripePaymentIntent);
 
 // admin routes
 
