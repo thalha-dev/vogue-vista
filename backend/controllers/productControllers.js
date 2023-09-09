@@ -25,68 +25,90 @@ const uploadNewShoe = async (req, res, next) => {
       throw createHttpError(400, "Shoe name not given");
     }
 
-    if (!shoeBrand) {
-      throw createHttpError(400, "Shoe name not given");
-    }
-
-    if (!shoePrice) {
-      throw createHttpError(400, "Shoe price not given");
-    }
-
-    if (!shoeSize) {
-      throw createHttpError(400, "Shoe size not given");
-    }
-
-    if (!shoeColor) {
-      throw createHttpError(400, "Shoe color not given");
-    }
-
-    if (!shoesAvailable) {
-      throw createHttpError(400, "Shoe available count not given");
-    }
-
-    if (!shoeRating) {
-      throw createHttpError(400, "Shoe old rating not given");
-    }
-
-    if (!imageFiles.length) {
-      throw createHttpError(400, "Shoe images are not given");
-    }
-
-    // array of objects containing image url and id from imagekit
-    const imageArray = [];
-
-    // uploading images and generating URL
-    for (let i = 0; i < imageFiles.length; i++) {
-      const image = await imagekit.upload({
-        file: imageFiles[i].buffer,
-        fileName: imageFiles[i].originalname,
-        folder: "/products",
-      });
-
-      const imageUrl = imagekit.url({
-        path: image.filePath,
-      });
-      const imageInfo = {
-        imageUrl,
-        imageId: image.fileId,
-      };
-      imageArray.push(imageInfo);
-    }
-
-    // saving in db
-    const newProduct = await ProductModel.create({
+    const products = await ProductModel.find({
       shoeName: shoeName,
-      shoeBrand: shoeBrand,
-      shoePrice: Number(shoePrice),
-      shoesAvailable: Number(shoesAvailable),
-      shoeSize: Number(shoeSize),
-      shoeColor: shoeColor,
-      shoeRating: Number(shoeRating),
-      shoeImages: imageArray,
-    });
+    }).exec();
 
-    res.status(200).json({ newProduct });
+    let existingProductIndex = null;
+    if (products) {
+      for (let i = 0; i < products.length; i++) {
+        if (
+          products[i].shoeSize === Number(shoeSize) &&
+          products[i].shoeColor === shoeColor
+        ) {
+          existingProductIndex = i;
+        }
+      }
+    }
+
+    if (existingProductIndex || existingProductIndex === 0) {
+      products[existingProductIndex].shoesAvailable++;
+      await products[existingProductIndex].save();
+      res.status(200).json({ products });
+    } else {
+      if (!shoeBrand) {
+        throw createHttpError(400, "Shoe name not given");
+      }
+
+      if (!shoePrice) {
+        throw createHttpError(400, "Shoe price not given");
+      }
+
+      if (!shoeSize) {
+        throw createHttpError(400, "Shoe size not given");
+      }
+
+      if (!shoeColor) {
+        throw createHttpError(400, "Shoe color not given");
+      }
+
+      if (!shoesAvailable) {
+        throw createHttpError(400, "Shoe available count not given");
+      }
+
+      if (!shoeRating) {
+        throw createHttpError(400, "Shoe old rating not given");
+      }
+
+      if (!imageFiles.length) {
+        throw createHttpError(400, "Shoe images are not given");
+      }
+
+      // array of objects containing image url and id from imagekit
+      const imageArray = [];
+
+      // uploading images and generating URL
+      for (let i = 0; i < imageFiles.length; i++) {
+        const image = await imagekit.upload({
+          file: imageFiles[i].buffer,
+          fileName: imageFiles[i].originalname,
+          folder: "/products",
+        });
+
+        const imageUrl = imagekit.url({
+          path: image.filePath,
+        });
+        const imageInfo = {
+          imageUrl,
+          imageId: image.fileId,
+        };
+        imageArray.push(imageInfo);
+      }
+
+      // saving in db
+      const newProduct = await ProductModel.create({
+        shoeName: shoeName,
+        shoeBrand: shoeBrand,
+        shoePrice: Number(shoePrice),
+        shoesAvailable: Number(shoesAvailable),
+        shoeSize: Number(shoeSize),
+        shoeColor: shoeColor,
+        shoeRating: Number(shoeRating),
+        shoeImages: imageArray,
+      });
+
+      res.status(200).json({ newProduct });
+    }
   } catch (error) {
     next(error);
   }
