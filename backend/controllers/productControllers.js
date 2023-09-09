@@ -397,6 +397,18 @@ const getAllShoesFromCart = async (req, res, next) => {
       throw createHttpError(404, "Nothing in the cart");
     }
 
+    for (let i = 0; i < userCart.cartItems.length; i++) {
+      if (
+        userCart.cartItems[i].shoeCount >
+        userCart.cartItems[i].shoe.shoesAvailable
+      ) {
+        userCart.cartItems[i].shoeCount =
+          userCart.cartItems[i].shoe.shoesAvailable;
+      }
+    }
+
+    await userCart.save();
+
     res.status(200).json(userCart);
   } catch (error) {
     next(error);
