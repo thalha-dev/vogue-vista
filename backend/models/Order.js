@@ -30,6 +30,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    deliveryAddress: {
+      type: String,
+      required: true,
+    },
+
     isOrderCompleted: {
       type: Boolean,
       default: false,

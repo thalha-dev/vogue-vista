@@ -522,6 +522,7 @@ const stripePaymentIntent = async (req, res, next) => {
   const id = req.body.id;
   const userId = req.body.userId;
   const orderType = req.body.orderType;
+  const deliveryAddress = req.body.deliveryAddress;
   const stripe = stripeLibrary(process.env.STRIPE_SECRET_KEY);
 
   try {
@@ -543,6 +544,10 @@ const stripePaymentIntent = async (req, res, next) => {
 
     if (!orderType) {
       throw createHttpError(400, "Order type is required");
+    }
+
+    if (!deliveryAddress) {
+      throw createHttpError(400, "Delivery Address is required");
     }
 
     let price = 0;
@@ -618,6 +623,7 @@ const stripePaymentIntent = async (req, res, next) => {
       productsInOrder: productsInOrder,
       orderPrice: price,
       payment_intent: paymentIntent.id,
+      deliveryAddress: deliveryAddress,
     });
 
     await newOrder.save();
