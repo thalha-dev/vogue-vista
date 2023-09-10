@@ -1,0 +1,19 @@
+/* GENERAL */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f6fbf4;
+  font-family: "Lato", sans-serif;
+  /* hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* hide scrollbar for chrome, safari and opera */
+body::-webkit-scrollbar {
+  display: none;
+}
