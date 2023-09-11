@@ -35,6 +35,12 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
+    shoeGenderCategory: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     shoeRating: {
       type: Number,
       required: true,

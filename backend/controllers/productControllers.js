@@ -15,6 +15,7 @@ const uploadNewShoe = async (req, res, next) => {
   const shoePrice = req.body.shoePrice;
   const shoeSize = req.body.shoeSize;
   const shoeColor = req.body.shoeColor;
+  const shoeGenderCategory = req.body.shoeGenderCategory;
   const shoesAvailable = req.body.shoesAvailable;
   const shoeRating = req.body.shoeRating;
   const imageFiles = req.files;
@@ -62,6 +63,10 @@ const uploadNewShoe = async (req, res, next) => {
         throw createHttpError(400, "Shoe color not given");
       }
 
+      if (!shoeGenderCategory) {
+        throw createHttpError(400, "Shoe gender category not given");
+      }
+
       if (!shoesAvailable) {
         throw createHttpError(400, "Shoe available count not given");
       }
@@ -103,6 +108,7 @@ const uploadNewShoe = async (req, res, next) => {
         shoesAvailable: Number(shoesAvailable),
         shoeSize: Number(shoeSize),
         shoeColor: shoeColor,
+        shoeGenderCategory: shoeGenderCategory,
         shoeRating: Number(shoeRating),
         shoeImages: imageArray,
       });
@@ -160,6 +166,7 @@ const updateShoeDetails = async (req, res, next) => {
   const shoePrice = req.body.shoePrice;
   const shoeSize = req.body.shoeSize;
   const shoeColor = req.body.shoeColor;
+  const shoeGenderCategory = req.body.shoeGenderCategory;
   const shoesAvailable = req.body.shoesAvailable;
   const shoeRating = req.body.shoeRating;
   const imageFiles = req.files;
@@ -183,6 +190,7 @@ const updateShoeDetails = async (req, res, next) => {
     if (shoePrice) product.shoePrice = Number(shoePrice);
     if (shoeSize) product.shoeSize = Number(shoeSize);
     if (shoeColor) product.shoeColor = shoeColor;
+    if (shoeGenderCategory) product.shoeGenderCategory = shoeGenderCategory;
     if (shoesAvailable) product.shoesAvailable = Number(shoesAvailable);
     if (shoeRating) product.shoeRating = Number(shoeRating);
     if (imageFiles.length) {
