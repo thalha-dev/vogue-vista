@@ -84,6 +84,21 @@ export const refreshAccessTokenSubsequent = createAsyncThunk(
   },
 );
 
+export const logout = createAsyncThunk("user/logout", async () => {
+  try {
+    const response = await api.get("/api/users/logout", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.error;
+    if (errorMessage) {
+      throw new Error(errorMessage);
+    }
+    throw error;
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
@@ -167,7 +182,7 @@ const userSlice = createSlice({
         state.signupStatus = "idle";
         state.errorMessageFrom = "refreshInitial";
       })
-      // -------------------------------------------------refreshAccessTokenInitial
+      // -------------------------------------------------refreshAccessTokenSubsequent
       .addCase(refreshAccessTokenSubsequent.pending, (state) => {
         state.refreshStatus = "loading";
         state.errorMessage = null;
@@ -184,6 +199,31 @@ const userSlice = createSlice({
         state.signupStatus = "idle";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "refreshSubsequent";
+      })
+      // -------------------------------------------------logout
+      .addCase(logout.fulfilled, (state) => {
+        state.token = null;
+        state.individualId = null;
+        state.individualName = null;
+        state.isAdmin = false;
+        state.isUser = false;
+        state.errorMessageFrom = "";
+        state.refreshStatus = "idle";
+        state.loginStatus = "idle";
+        state.signupStatus = "idle";
+        state.errorMessage = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.token = null;
+        state.individualId = null;
+        state.individualName = null;
+        state.isAdmin = false;
+        state.isUser = false;
+        state.refreshStatus = "failed";
+        state.loginStatus = "idle";
+        state.signupStatus = "idle";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "logout";
       });
   },
 });
