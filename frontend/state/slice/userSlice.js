@@ -66,6 +66,24 @@ export const refreshAccessTokenInitial = createAsyncThunk(
   },
 );
 
+export const refreshAccessTokenSubsequent = createAsyncThunk(
+  "user/refreshAccessTokenSubsequent",
+  async () => {
+    try {
+      const response = await api.get("/api/users/refreshAccessToken", {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      }
+      throw error;
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
@@ -148,6 +166,24 @@ const userSlice = createSlice({
         state.loginStatus = "idle";
         state.signupStatus = "idle";
         state.errorMessageFrom = "refreshInitial";
+      })
+      // -------------------------------------------------refreshAccessTokenInitial
+      .addCase(refreshAccessTokenSubsequent.pending, (state) => {
+        state.refreshStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(refreshAccessTokenSubsequent.fulfilled, (state, action) => {
+        const tokenRecieved = action.payload.accessToken;
+        state.token = tokenRecieved;
+        state.refreshStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(refreshAccessTokenSubsequent.rejected, (state, action) => {
+        state.refreshStatus = "failed";
+        state.loginStatus = "idle";
+        state.signupStatus = "idle";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "refreshSubsequent";
       });
   },
 });
