@@ -55,13 +55,19 @@ const signup = async (req, res, next) => {
 
     const passwodHashed = await bcrypt.hash(passwodRaw, 10);
 
+    const rolesGiven = {};
+
+    if (role === ROLES_LIST.Admin) {
+      rolesGiven.Admin = ROLES_LIST.Admin;
+    } else {
+      rolesGiven.User = ROLES_LIST.User;
+    }
+
     const newUser = await UserModel.create({
       username: username,
       email: email,
       password: passwodHashed,
-      roles: {
-        User: ROLES_LIST.User,
-      },
+      roles: rolesGiven,
     });
 
     res.status(201).json(newUser);
@@ -87,7 +93,7 @@ const login = async (req, res, next) => {
       throw createHttpError(401, "User doesn't exist. Signup instead.");
     }
 
-    const passwordMatch = bcrypt.compare(passwodRaw, user.password);
+    const passwordMatch = await bcrypt.compare(passwodRaw, user.password);
 
     if (!passwordMatch) {
       throw createHttpError(401, "Invalid Credentials");
