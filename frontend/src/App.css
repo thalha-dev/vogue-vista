@@ -6,14 +6,136 @@
 
 body {
   margin: 0;
-  background: #f6fbf4;
-  font-family: "Lato", sans-serif;
-  /* hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  font-family: Helvetica, Verdana, Arial, sans-serif;
 }
 
-/* hide scrollbar for chrome, safari and opera */
-body::-webkit-scrollbar {
+/* ***************************************************************** */
+/*                              HEADER                               */
+/*               (desktop first approach only for HEADER)            */
+/* ***************************************************************** */
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  background: #071417;
+  color: #c6d4d4;
+  letter-spacing: 1.1px;
+}
+
+.site-header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-header ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-title {
+  padding-left: 1.2em;
+}
+
+.nav-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 1em;
+}
+
+.nav-btn {
   display: none;
+}
+
+.nav-container li {
+  display: block;
+  padding-left: 0.5em;
+}
+
+.nav-container a {
+  display: block;
+  padding: 0.5em 0.8em;
+}
+
+.nav-container a:hover,
+.nav-container a:focus {
+  background: #c6d4d4;
+  border-radius: 3px;
+  color: #000;
+}
+
+.nav-container a.active {
+  background: #c6d4d4;
+  color: #000;
+  border-radius: 3px;
+}
+
+@media (max-width: 35em) {
+  .nav-container {
+    position: fixed;
+    height: 100vh;
+    background: #071417;
+    z-index: 9999;
+    width: 80%;
+    justify-content: start;
+    border-left: 2px solid black;
+    color: inherit;
+    right: 0;
+    text-align: center;
+    padding-right: 0;
+    transform: translateX(100%);
+  }
+
+  .nav-container li {
+    display: flex;
+    justify-content: center;
+    padding: 0.2em 0;
+  }
+
+  .nav-container a {
+    padding: 0.7em 4em;
+  }
+
+  .nav-container a.active {
+    background: #c6d4d4;
+    color: #000;
+  }
+
+  .btn-toggle {
+    transform: translateX(0%);
+    transition: transform 350ms ease-out;
+  }
+
+  .nav-btn {
+    display: block;
+    top: 0;
+    right: 0;
+    z-index: 10000;
+    padding: 0.7em;
+    background: #071417;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .nav-btn path {
+    fill: #c6d4d4;
+    stroke: #c6d4d4;
+  }
+
+  .position-fixed {
+    position: fixed;
+  }
+
+  .site-header ul {
+    flex-direction: column;
+  }
+
+  .site-nav {
+    padding-top: min(20vh, 5em);
+  }
 }
