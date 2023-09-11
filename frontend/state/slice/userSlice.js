@@ -47,6 +47,25 @@ export const login = createAsyncThunk("user/login", async (userCredentials) => {
   }
 });
 
+export const refreshAccessTokenInitial = createAsyncThunk(
+  "user/refreshAccessTokenInitial",
+  async () => {
+    try {
+      const response = await api.get("/api/users/refreshAccessToken", {
+        withCredentials: true,
+      });
+
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      }
+      throw error;
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
@@ -97,6 +116,38 @@ const userSlice = createSlice({
         state.loginStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "login";
+      })
+      // -------------------------------------------------refreshAccessTokenInitial
+      .addCase(refreshAccessTokenInitial.pending, (state) => {
+        state.refreshStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(refreshAccessTokenInitial.fulfilled, (state, action) => {
+        const tokenRecieved = action.payload.accessToken;
+        const decoded = jwt_decode(tokenRecieved);
+        const rolesArray = decoded.UserInfo.roles;
+
+        rolesArray.forEach((roleGiven) => {
+          if (roleGiven === Number(import.meta.env.VITE_ROLE_ADMIN)) {
+            state.isAdmin = true;
+          }
+          if (roleGiven === Number(import.meta.env.VITE_ROLE_USER)) {
+            state.isUser = true;
+          }
+        });
+
+        state.token = tokenRecieved;
+        state.individualName = decoded?.UserInfo?.username || null;
+        state.individualId = decoded?.UserInfo?.userId || null;
+        state.refreshStatus = "success";
+        state.loginStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(refreshAccessTokenInitial.rejected, (state) => {
+        state.refreshStatus = "failed";
+        state.loginStatus = "idle";
+        state.signupStatus = "idle";
+        state.errorMessageFrom = "refreshInitial";
       });
   },
 });
