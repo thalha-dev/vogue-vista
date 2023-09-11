@@ -233,9 +233,9 @@ body {
   text-align: center;
   font-weight: bold;
   text-transform: capitalize;
-  background: #6ac16a;
+  background: #c6d4d4;
   padding: 1em;
-  width: 50%;
-  margin: 0 auto;
-  border: 2px solid #071417;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1);
 }
