@@ -3,7 +3,7 @@ import { BiMenu } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getLoginStatusCB } from "../../../state/slice/userSlice";
+import { getLoginStatusCB, logout } from "../../../state/slice/userSlice";
 
 const NavbarLayout = () => {
   const [toggleValue, setToggleValue] = useState(false);
