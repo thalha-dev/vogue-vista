@@ -35,6 +35,7 @@ const uploadNewShoe = async (req, res, next) => {
       for (let i = 0; i < products.length; i++) {
         if (
           products[i].shoeSize === Number(shoeSize) &&
+          products[i].shoeBrand === shoeBrand &&
           products[i].shoeColor === shoeColor
         ) {
           existingProductIndex = i;
