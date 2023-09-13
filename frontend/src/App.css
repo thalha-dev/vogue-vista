@@ -239,3 +239,41 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.2),
     0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* ***************************************************************** */
+/*                               HOME PAGE                           */
+/* ***************************************************************** */
+
+.home-search {
+  display: flex;
+  justify-content: center;
+  background: #071417;
+  padding: 0.5em 0.5em 1.3em;
+  position: sticky;
+  top: 0;
+}
+
+.home-search-container {
+  display: flex;
+  width: 95%;
+  max-width: 680px;
+}
+
+.home-search-bar {
+  display: block;
+  width: 90%;
+  font-size: 1.1rem;
+  padding: 0.5em 0.7em;
+  border: none;
+  background: #c6d4d4;
+}
+
+.home-search-button {
+  background: #c6d4d4;
+  color: #000;
+  border: none;
+  border-left: 2px solid #000;
+  padding: 0.5em 0.7em;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
