@@ -1,11 +1,12 @@
 import { BiSearch } from "react-icons/bi";
+import { BiFilterAlt } from "react-icons/bi";
 import { useState } from "react";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   return (
     <div className="home-container">
-      <section className="home-search">
+      <section className="home-search-section">
         <div className="home-search-container">
           <input
             className="home-search-bar"
@@ -19,6 +20,11 @@ const Home = () => {
           />
           <button className="home-search-button">
             <BiSearch />
+          </button>
+        </div>
+        <div className="home-show-filter-container">
+          <button className="home-show-filter-button">
+            <span>Filters</span> <BiFilterAlt />
           </button>
         </div>
       </section>
