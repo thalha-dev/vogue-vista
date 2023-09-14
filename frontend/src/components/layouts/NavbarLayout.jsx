@@ -1,14 +1,21 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoginStatusCB, logout } from "../../../state/slice/userSlice";
+import { getAllShoes } from "../../../state/slice/shoeSlice";
 
 const NavbarLayout = () => {
   const [toggleValue, setToggleValue] = useState(false);
   const loginStatus = useSelector(getLoginStatusCB);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (loginStatus === "success") {
+      dispatch(getAllShoes());
+    }
+  }, [loginStatus]);
 
   const handleToggle = () => {
     setToggleValue(!toggleValue);

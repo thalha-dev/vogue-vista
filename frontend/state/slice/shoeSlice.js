@@ -4,6 +4,9 @@ import { refreshAccessTokenSubsequent } from "./userSlice";
 
 const initialState = {
   allShoes: [],
+  shoeBrands: [],
+  shoeSizes: [],
+  shoeColors: [],
   errorMessage: null,
   errorMessageFrom: "",
   //possible values: [ idle, loading, success, failed ]
@@ -67,7 +70,29 @@ const shoeSlice = createSlice({
         state.errorMessage = null;
       })
       .addCase(getAllShoes.fulfilled, (state, action) => {
-        state.allShoes = action.payload?.products;
+        state.allShoes = action.payload?.products || [];
+
+        // Extracting unique brands, colors, and sizes
+        const brandsSet = new Set();
+        const colorsSet = new Set();
+        const sizesSet = new Set();
+
+        action.payload?.products?.forEach((shoe) => {
+          if (shoe?.shoeBrand) {
+            brandsSet.add(shoe.shoeBrand);
+          }
+          if (shoe?.shoeColor) {
+            colorsSet.add(shoe.shoeColor);
+          }
+          if (shoe?.shoeSize) {
+            sizesSet.add(shoe.shoeSize);
+          }
+        });
+
+        state.shoeBrands = [...brandsSet];
+        state.shoeColors = [...colorsSet];
+        state.shoeSizes = [...sizesSet].sort();
+
         state.allShoesStatus = "success";
         state.errorMessage = null;
       })
@@ -79,7 +104,10 @@ const shoeSlice = createSlice({
   },
 });
 
-export const getAllShoesCB = (state) => state.shoe.allShoes;
-export const getAllShoesStatusCB = (state) => state.shoe.allShoesStatus;
+export const allShoesCB = (state) => state.shoe.allShoes;
+export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
+export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
+export const getShoeColorsCB = (state) => state.shoe.shoeColors;
+export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
 
 export default shoeSlice.reducer;
