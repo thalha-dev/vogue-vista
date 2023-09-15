@@ -1,8 +1,12 @@
 import { BiSearch } from "react-icons/bi";
 import { BiFilterAlt } from "react-icons/bi";
+import { RxStarFilled } from "react-icons/rx";
+import { TbCurrencyRupee } from "react-icons/tb";
+import { AiFillHeart } from "react-icons/ai";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
+  allShoesCB,
   getShoeBrandsCB,
   getShoeColorsCB,
   getshoeSizesCB,
@@ -14,9 +18,44 @@ const Home = () => {
   const shoeBrands = useSelector(getShoeBrandsCB);
   const shoeSizes = useSelector(getshoeSizesCB);
   const shoeColors = useSelector(getShoeColorsCB);
+  const allShoes = useSelector(allShoesCB);
 
   const toggleFilter = () => {
     setFilterExpand(!filterExpand);
+  };
+
+  const renderShoes = (shoes) => {
+    return shoes.map((shoe) => (
+      <div key={shoe?._id} className="home-prodcut-container">
+        <div className="home-product-upper-container">
+          <img
+            className="home-product-image"
+            src={shoe?.shoeImages[0]?.imageUrl}
+            alt={`product image of the shoe ${shoe?.shoeName}`}
+          />
+          <div className="home-product-rating-wish-container">
+            <span className="home-product-rating">
+              <RxStarFilled />
+              {shoe.shoeRating}
+            </span>
+            <button className="home-product-wishlist-button">
+              <AiFillHeart className="home-product-wishlist-button-heart" />
+            </button>
+          </div>
+        </div>
+        <div className="home-product-lower-container">
+          <p className="home-product-brand">{shoe.shoeBrand}</p>
+          <p className="home-product-name">{shoe.shoeName}</p>
+          <div className="home-product-size-color-container">
+            <p className="home-product-size">{shoe.shoeSize} UK</p>
+            <p className="home-product-color">{shoe.shoeColor}</p>
+          </div>
+          <p className="home-product-price">
+            <TbCurrencyRupee /> {shoe.shoePrice}
+          </p>
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -132,7 +171,9 @@ const Home = () => {
             <button className="filter-reset-button">Reset</button>
           </div>
         </section>
-        <section className="home-products-display-section"></section>
+        <section className="home-products-display-section">
+          {allShoes && renderShoes(allShoes)}
+        </section>
       </div>
     </div>
   );
