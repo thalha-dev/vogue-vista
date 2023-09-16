@@ -4,8 +4,9 @@ import { RxStarFilled } from "react-icons/rx";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { AiFillHeart } from "react-icons/ai";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  addToWishList,
   allShoesCB,
   getShoeBrandsCB,
   getShoeColorsCB,
@@ -26,6 +27,8 @@ const Home = () => {
   const shoeColors = useSelector(getShoeColorsCB);
   const allShoes = useSelector(allShoesCB);
   const [filteredProducts, setFilteredProducts] = useState(null);
+
+  const dispatch = useDispatch();
 
   // generic function to handle checkbox changes
   const handleCheckboxChange = (event, selectedState, setSelectedState) => {
@@ -95,6 +98,10 @@ const Home = () => {
     setFilteredProducts(filteredBySearch);
   };
 
+  const handleAddToWishListButtonClick = (productId) => {
+    dispatch(addToWishList({ productId: productId }));
+  };
+
   // function to render shoes from given array of products
   const renderShoes = (shoes) => {
     return shoes.map((shoe) => (
@@ -110,7 +117,12 @@ const Home = () => {
               <RxStarFilled />
               {shoe.shoeRating}
             </span>
-            <button className="home-product-wishlist-button">
+            <button
+              onClick={() => {
+                handleAddToWishListButtonClick(shoe._id);
+              }}
+              className="home-product-wishlist-button"
+            >
               <AiFillHeart className="home-product-wishlist-button-heart" />
             </button>
           </div>

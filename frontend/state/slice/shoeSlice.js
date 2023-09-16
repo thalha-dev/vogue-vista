@@ -13,6 +13,7 @@ const initialState = {
   //possible values: [ idle, loading, success, failed ]
   allShoesStatus: "idle",
   wishListStatus: "idle",
+  addToWishListStatus: "idle",
 };
 
 export const getAllShoes = createAsyncThunk(
@@ -116,6 +117,70 @@ export const getAllShoesFromWishList = createAsyncThunk(
   },
 );
 
+export const addToWishList = createAsyncThunk(
+  "article/addToWishList",
+  async (params, { getState, dispatch }) => {
+    const individualId = getState().user.individualId;
+    try {
+      const response = await api.post(
+        "/api/shoes/addToWishList",
+        {
+          userId: individualId,
+          productId: params.productId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getState().user.token}`,
+          },
+
+          withCredentials: true,
+        },
+      );
+
+      await dispatch(getAllShoesFromWishList());
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessTokenSubsequent());
+
+          const response = await api.post(
+            "/api/shoes/addToWishList",
+            {
+              userId: individualId,
+              productId: params.productId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getState().user.token}`,
+              },
+
+              withCredentials: true,
+            },
+          );
+
+          await dispatch(getAllShoesFromWishList());
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
 const shoeSlice = createSlice({
   name: "shoe",
   initialState: initialState,
@@ -172,6 +237,20 @@ const shoeSlice = createSlice({
         state.wishListStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "getAllShoesFromWishList";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(addToWishList.pending, (state) => {
+        state.addToWishListStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(addToWishList.fulfilled, (state, action) => {
+        state.addToWishListStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(addToWishList.rejected, (state, action) => {
+        state.addToWishListStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "addToWishList";
       });
   },
 });
