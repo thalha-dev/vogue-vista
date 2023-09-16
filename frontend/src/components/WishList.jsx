@@ -1,12 +1,22 @@
 import { RxStarFilled } from "react-icons/rx";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
-import { useSelector } from "react-redux";
-import { wishListCB, wishListStatusCB } from "../../state/slice/shoeSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  removeFromWishList,
+  wishListCB,
+  wishListStatusCB,
+} from "../../state/slice/shoeSlice";
 
 const WishList = () => {
   const wishListProducts = useSelector(wishListCB);
   const wishListProductsStatus = useSelector(wishListStatusCB);
+  const dispatch = useDispatch();
+
+  // function to handle remove from wishlist button click
+  const handleRemoveButtonClick = (productId) => {
+    dispatch(removeFromWishList({ productId: productId }));
+  };
 
   // function to render shoes from given wish list
   const renderShoesFromWishList = (shoes) => {
@@ -23,7 +33,12 @@ const WishList = () => {
               <RxStarFilled />
               {shoe.shoeRating}
             </span>
-            <button className="wishlist-product-wishlist-button">
+            <button
+              onClick={() => {
+                handleRemoveButtonClick(shoe._id);
+              }}
+              className="wishlist-product-wishlist-button"
+            >
               <MdDelete className="wishlist-product-wishlist-button-trash" />
             </button>
           </div>
@@ -42,6 +57,7 @@ const WishList = () => {
       </div>
     ));
   };
+
   return (
     <div className="wishlist-container">
       <section className="wishlist-products-display-section">
