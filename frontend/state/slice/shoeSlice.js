@@ -118,7 +118,7 @@ export const getAllShoesFromWishList = createAsyncThunk(
 );
 
 export const addToWishList = createAsyncThunk(
-  "article/addToWishList",
+  "shoe/addToWishList",
   async (params, { getState, dispatch }) => {
     const individualId = getState().user.individualId;
     try {
