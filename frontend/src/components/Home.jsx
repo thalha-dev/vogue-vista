@@ -79,6 +79,22 @@ const Home = () => {
     setSelectedPriceRange(["", ""]);
   };
 
+  const handleSearchButtonClick = () => {
+    const filteredBySearch = allShoes.filter((shoe) => {
+      const query = searchQuery.trim().toLowerCase();
+      if (
+        shoe.shoeName.toLowerCase().includes(query) ||
+        shoe.shoeBrand.toLowerCase().includes(query) ||
+        shoe.shoeColor.toLowerCase().includes(query) ||
+        shoe.shoeSize.toString() === query
+      ) {
+        return true;
+      }
+    });
+
+    setFilteredProducts(filteredBySearch);
+  };
+
   // function to render shoes from given array of products
   const renderShoes = (shoes) => {
     return shoes.map((shoe) => (
@@ -190,7 +206,10 @@ const Home = () => {
               setSearchQuery(e.target.value);
             }}
           />
-          <button className="home-search-button">
+          <button
+            onClick={handleSearchButtonClick}
+            className="home-search-button"
+          >
             <BiSearch />
           </button>
         </div>
