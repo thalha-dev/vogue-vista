@@ -15,15 +15,71 @@ import {
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterExpand, setFilterExpand] = useState(false);
+  const [selectedGenders, setSelectedGenders] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedPriceRange, setSelectedPriceRange] = useState(["", ""]);
+
   const shoeBrands = useSelector(getShoeBrandsCB);
   const shoeSizes = useSelector(getshoeSizesCB);
   const shoeColors = useSelector(getShoeColorsCB);
   const allShoes = useSelector(allShoesCB);
+  const [filteredProducts, setFilteredProducts] = useState(null);
 
+  // generic function to handle checkbox changes
+  const handleCheckboxChange = (event, selectedState, setSelectedState) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      setSelectedState([...selectedState, value]);
+    } else {
+      setSelectedState(selectedState.filter((item) => item !== value));
+    }
+  };
+
+  // For handling gender checkboxes
+  const handleGenderCheckboxChange = (event) => {
+    handleCheckboxChange(event, selectedGenders, setSelectedGenders);
+  };
+
+  // For handling size checkboxes
+  const handleSizeCheckboxChange = (event) => {
+    handleCheckboxChange(event, selectedSizes, setSelectedSizes);
+  };
+
+  // For handling brands checkboxes
+  const handleBrandCheckboxChange = (event) => {
+    handleCheckboxChange(event, selectedBrands, setSelectedBrands);
+  };
+
+  // For handling color checkboxes
+  const handleColorCheckboxChange = (event) => {
+    handleCheckboxChange(event, selectedColors, setSelectedColors);
+  };
+
+  // function to toggle filter section in mobile view
   const toggleFilter = () => {
     setFilterExpand(!filterExpand);
   };
 
+  // function to apply all filters
+  const handleApplyFilter = () => {
+    const filtered = returnFilteredProducts(allShoes);
+    setFilteredProducts(filtered);
+  };
+
+  // function to reset all filters
+  const handleResetFilter = () => {
+    setFilteredProducts(null);
+    setSelectedGenders([]);
+    setSelectedColors([]);
+    setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedPriceRange(["", ""]);
+  };
+
+  // function to render shoes from given array of products
   const renderShoes = (shoes) => {
     return shoes.map((shoe) => (
       <div key={shoe?._id} className="home-prodcut-container">
@@ -56,6 +112,68 @@ const Home = () => {
         </div>
       </div>
     ));
+  };
+
+  // function to filter the products with selected condition
+  const returnFilteredProducts = (products) => {
+    const productsToReturn = products.filter((shoe) => {
+      let isGenderOk = false;
+      let isSizeOk = false;
+      let isBrandOk = false;
+      let isColorOk = false;
+      let isPriceOk = false;
+
+      // checking for gender
+      if (
+        selectedGenders.length === 0 ||
+        selectedGenders.includes(shoe.shoeGenderCategory)
+      ) {
+        isGenderOk = true;
+      }
+
+      // checking for brand
+      if (
+        selectedBrands.length === 0 ||
+        selectedBrands.includes(shoe.shoeBrand)
+      ) {
+        isBrandOk = true;
+      }
+
+      // checking for color
+      if (
+        selectedColors.length === 0 ||
+        selectedColors.includes(shoe.shoeColor)
+      ) {
+        isColorOk = true;
+      }
+
+      // checking for size
+      if (
+        selectedSizes.length === 0 ||
+        selectedSizes.includes(shoe.shoeSize.toString())
+      ) {
+        isSizeOk = true;
+      }
+
+      // checking for price
+      if (!selectedPriceRange[0] && !selectedPriceRange[1]) {
+        isPriceOk = true;
+      } else if (selectedPriceRange[0] && !selectedPriceRange[1]) {
+        isPriceOk = Number(shoe.shoePrice) >= Number(selectedPriceRange[0]);
+      } else if (!selectedPriceRange[0] && selectedPriceRange[1]) {
+        isPriceOk = Number(shoe.shoePrice) <= Number(selectedPriceRange[1]);
+      } else {
+        isPriceOk =
+          Number(shoe.shoePrice) >= Number(selectedPriceRange[0]) &&
+          Number(shoe.shoePrice) <= Number(selectedPriceRange[1]);
+      }
+
+      // checking all condtion to be true
+      if (isPriceOk && isSizeOk && isColorOk && isBrandOk && isGenderOk) {
+        return true;
+      }
+    });
+    return productsToReturn;
   };
 
   return (
@@ -97,11 +215,23 @@ const Home = () => {
           <div className="filters-sub-container">
             <h5>Category</h5>
             <div className="filter-checkbox-container">
-              <input type="checkbox" value="men" id="filter-input-men" />
+              <input
+                type="checkbox"
+                value="men"
+                onChange={handleGenderCheckboxChange}
+                checked={selectedGenders.includes("men")}
+                id="filter-input-men"
+              />
               <label htmlFor="filter-input-men">Men</label>
             </div>
             <div className="filter-checkbox-container">
-              <input type="checkbox" id="filter-input-women" value="women" />
+              <input
+                type="checkbox"
+                value="women"
+                onChange={handleGenderCheckboxChange}
+                checked={selectedGenders.includes("women")}
+                id="filter-input-women"
+              />
               <label htmlFor="filter-input-women">Women</label>
             </div>
           </div>
@@ -113,6 +243,9 @@ const Home = () => {
                 type="number"
                 id="filter-min-price-input"
                 className="filter-min-price-input"
+                onChange={(e) => {
+                  setSelectedPriceRange((v) => [e.target.value, v[1]]);
+                }}
               />
             </div>
             <div className="filter-price-container">
@@ -121,6 +254,9 @@ const Home = () => {
                 type="number"
                 id="filter-max-price-input"
                 className="filter-max-price-input"
+                onChange={(e) => {
+                  setSelectedPriceRange((v) => [v[0], e.target.value]);
+                }}
               />
             </div>
           </div>
@@ -132,6 +268,8 @@ const Home = () => {
                   <input
                     type="checkbox"
                     id={`for-label-${brand}`}
+                    onChange={handleBrandCheckboxChange}
+                    checked={selectedBrands.includes(brand)}
                     value={`${brand}`}
                   />
                   <label htmlFor={`for-label-${brand}`}>{brand}</label>
@@ -146,7 +284,9 @@ const Home = () => {
                   <input
                     type="checkbox"
                     id={`for-label-${size}`}
-                    value={`${size}`}
+                    onChange={handleSizeCheckboxChange}
+                    checked={selectedSizes.includes(`${size}`)}
+                    value={size}
                   />
                   <label htmlFor={`for-label-${size}`}>{size} UK</label>
                 </div>
@@ -159,6 +299,8 @@ const Home = () => {
                 <div key={color} className="filter-checkbox-container">
                   <input
                     type="checkbox"
+                    onChange={handleColorCheckboxChange}
+                    checked={selectedColors.includes(color)}
                     id={`for-label-${color}`}
                     value={`${color}`}
                   />
@@ -167,12 +309,18 @@ const Home = () => {
               ))}
           </div>
           <div className="filter-apply-container">
-            <button className="filter-apply-button">Apply</button>
-            <button className="filter-reset-button">Reset</button>
+            <button className="filter-apply-button" onClick={handleApplyFilter}>
+              Apply
+            </button>
+            <button className="filter-reset-button" onClick={handleResetFilter}>
+              Reset
+            </button>
           </div>
         </section>
         <section className="home-products-display-section">
-          {allShoes && renderShoes(allShoes)}
+          {filteredProducts
+            ? renderShoes(filteredProducts)
+            : renderShoes(allShoes)}
         </section>
       </div>
     </div>
