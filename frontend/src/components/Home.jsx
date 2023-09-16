@@ -82,7 +82,7 @@ const Home = () => {
   // function to render shoes from given array of products
   const renderShoes = (shoes) => {
     return shoes.map((shoe) => (
-      <div key={shoe?._id} className="home-prodcut-container">
+      <div key={shoe?._id} className="home-product-container">
         <div className="home-product-upper-container">
           <img
             className="home-product-image"

@@ -4,6 +4,7 @@ import { refreshAccessTokenSubsequent } from "./userSlice";
 
 const initialState = {
   allShoes: [],
+  wishList: [],
   shoeBrands: [],
   shoeSizes: [],
   shoeColors: [],
@@ -11,6 +12,7 @@ const initialState = {
   errorMessageFrom: "",
   //possible values: [ idle, loading, success, failed ]
   allShoesStatus: "idle",
+  wishListStatus: "idle",
 };
 
 export const getAllShoes = createAsyncThunk(
@@ -39,6 +41,61 @@ export const getAllShoes = createAsyncThunk(
             },
             withCredentials: true,
           });
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
+export const getAllShoesFromWishList = createAsyncThunk(
+  "shoe/getAllShoesFromWishList",
+  async (_, { getState, dispatch }) => {
+    try {
+      const token = getState().user.token;
+      const individualId = getState().user.individualId;
+
+      const response = await api.get(
+        `/api/shoes/getAllShoesFromWishList/${individualId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessTokenSubsequent());
+
+          const token = getState().user.token;
+          const individualId = getState().user.individualId;
+
+          const response = await api.get(
+            `/api/shoes/getAllShoesFromWishList/${individualId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              withCredentials: true,
+            },
+          );
 
           return response.data;
         } catch (refreshError) {
@@ -100,12 +157,29 @@ const shoeSlice = createSlice({
         state.allShoesStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "getAllShoes";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(getAllShoesFromWishList.pending, (state) => {
+        state.wishListStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(getAllShoesFromWishList.fulfilled, (state, action) => {
+        state.wishList = action.payload?.wishListItems || [];
+        state.wishListStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(getAllShoesFromWishList.rejected, (state, action) => {
+        state.wishListStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "getAllShoesFromWishList";
       });
   },
 });
 
 export const allShoesCB = (state) => state.shoe.allShoes;
+export const wishListCB = (state) => state.shoe.wishList;
 export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
+export const wishListStatusCB = (state) => state.shoe.wishListStatus;
 export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
 export const getShoeColorsCB = (state) => state.shoe.shoeColors;
 export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
