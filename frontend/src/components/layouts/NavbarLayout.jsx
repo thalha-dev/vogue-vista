@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getLoginStatusCB, logout } from "../../../state/slice/userSlice";
 import {
   getAllShoes,
+  getAllShoesFromCart,
   getAllShoesFromWishList,
 } from "../../../state/slice/shoeSlice";
 
@@ -18,6 +19,7 @@ const NavbarLayout = () => {
     if (loginStatus === "success") {
       dispatch(getAllShoes());
       dispatch(getAllShoesFromWishList());
+      dispatch(getAllShoesFromCart());
     }
   }, [loginStatus]);
 

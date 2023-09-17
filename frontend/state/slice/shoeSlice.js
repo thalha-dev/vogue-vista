@@ -5,15 +5,18 @@ import { refreshAccessTokenSubsequent } from "./userSlice";
 const initialState = {
   allShoes: [],
   wishList: [],
+  cart: [],
   shoeBrands: [],
   shoeSizes: [],
   shoeColors: [],
   singleShoe: {},
+  cartTotalAmount: null,
   errorMessage: null,
   errorMessageFrom: "",
   //possible values: [ idle, loading, success, failed ]
   allShoesStatus: "idle",
   wishListStatus: "idle",
+  cartStatus: "idle",
   addToWishListStatus: "idle",
   removeFromWishListStatus: "idle",
   singleShoeStatus: "idle",
@@ -295,6 +298,61 @@ export const getSingleShoe = createAsyncThunk(
   },
 );
 
+export const getAllShoesFromCart = createAsyncThunk(
+  "shoe/getAllShoesFromCart",
+  async (_, { getState, dispatch }) => {
+    try {
+      const token = getState().user.token;
+      const individualId = getState().user.individualId;
+
+      const response = await api.get(
+        `/api/shoes/getAllShoesFromCart/${individualId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessTokenSubsequent());
+
+          const token = getState().user.token;
+          const individualId = getState().user.individualId;
+
+          const response = await api.get(
+            `/api/shoes/getAllShoesFromCart/${individualId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              withCredentials: true,
+            },
+          );
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
 const shoeSlice = createSlice({
   name: "shoe",
   initialState: initialState,
@@ -394,15 +452,44 @@ const shoeSlice = createSlice({
         state.singleShoeStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "getSingleShoe";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(getAllShoesFromCart.pending, (state) => {
+        state.cartStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(getAllShoesFromCart.fulfilled, (state, action) => {
+        state.cart = action.payload || [];
+
+        if (action.payload) {
+          let totalAmount = 0;
+
+          action.payload.cartItems.forEach((ob) => {
+            totalAmount += Number(ob.shoe.shoePrice) * Number(ob.shoeCount);
+          });
+
+          state.cartTotalAmount = totalAmount;
+        }
+
+        state.cartStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(getAllShoesFromCart.rejected, (state, action) => {
+        state.cartStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "getAllShoesFromCart";
       });
   },
 });
 
 export const allShoesCB = (state) => state.shoe.allShoes;
 export const wishListCB = (state) => state.shoe.wishList;
+export const cartCB = (state) => state.shoe.cart;
 export const singleShoeCB = (state) => state.shoe.singleShoe;
+export const cartTotalAmountCB = (state) => state.shoe.cartTotalAmount;
 export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
 export const wishListStatusCB = (state) => state.shoe.wishListStatus;
+export const cartStatusCB = (state) => state.shoe.cartStatus;
 export const getSingleShoeStatusCB = (state) => state.shoe.singleShoeStatus;
 export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
 export const getShoeColorsCB = (state) => state.shoe.shoeColors;
