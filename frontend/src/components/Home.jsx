@@ -12,6 +12,7 @@ import {
   getShoeColorsCB,
   getshoeSizesCB,
 } from "../../state/slice/shoeSlice";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -107,11 +108,13 @@ const Home = () => {
     return shoes.map((shoe) => (
       <div key={shoe?._id} className="home-product-container">
         <div className="home-product-upper-container">
-          <img
-            className="home-product-image"
-            src={shoe?.shoeImages[0]?.imageUrl}
-            alt={`product image of the shoe ${shoe?.shoeName}`}
-          />
+          <Link className="home-product-link" to={`/singleProduct/${shoe._id}`}>
+            <img
+              className="home-product-image"
+              src={shoe?.shoeImages[0]?.imageUrl}
+              alt={`product image of the shoe ${shoe?.shoeName}`}
+            />
+          </Link>
           <div className="home-product-rating-wish-container">
             <span className="home-product-rating">
               <RxStarFilled />
@@ -127,17 +130,19 @@ const Home = () => {
             </button>
           </div>
         </div>
-        <div className="home-product-lower-container">
-          <p className="home-product-brand">{shoe.shoeBrand}</p>
-          <p className="home-product-name">{shoe.shoeName}</p>
-          <div className="home-product-size-color-container">
-            <p className="home-product-size">{shoe.shoeSize} UK</p>
-            <p className="home-product-color">{shoe.shoeColor}</p>
+        <Link className="home-product-link" to={`/singleProduct/${shoe._id}`}>
+          <div className="home-product-lower-container">
+            <p className="home-product-brand">{shoe.shoeBrand}</p>
+            <p className="home-product-name">{shoe.shoeName}</p>
+            <div className="home-product-size-color-container">
+              <p className="home-product-size">{shoe.shoeSize} UK</p>
+              <p className="home-product-color">{shoe.shoeColor}</p>
+            </div>
+            <p className="home-product-price">
+              <TbCurrencyRupee /> {shoe.shoePrice}
+            </p>
           </div>
-          <p className="home-product-price">
-            <TbCurrencyRupee /> {shoe.shoePrice}
-          </p>
-        </div>
+        </Link>
       </div>
     ));
   };

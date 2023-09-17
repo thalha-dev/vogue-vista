@@ -14,6 +14,7 @@ import Cart from "./components/Cart";
 import Orders from "./components/Orders";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import SingleProduct from "./components/SingleProduct";
 
 function App() {
   const routes = createBrowserRouter(
@@ -23,6 +24,7 @@ function App() {
         <Route path="home" element={<Home />} />
         <Route path="wishlist" element={<WishList />} />
         <Route path="cart" element={<Cart />} />
+        <Route path="singleProduct/:id" element={<SingleProduct />} />
         <Route path="orders" element={<Orders />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
