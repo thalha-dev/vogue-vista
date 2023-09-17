@@ -340,6 +340,7 @@ const addToCart = async (req, res, next) => {
 const removeFromCart = async (req, res, next) => {
   const userId = req.body.userId;
   const productId = req.body.productId;
+  const removeItemCompletely = req.body.removeItemCompletely;
 
   try {
     if (!userId) {
@@ -374,13 +375,20 @@ const removeFromCart = async (req, res, next) => {
       throw createHttpError(400, "Shoe doesn't exist in cart");
     }
 
-    // remove the item if count less than 2 or else decrease the count
-    if (userCart.cartItems[itemIndex].shoeCount < 2) {
+    if (removeItemCompletely) {
+      // remove the item completely from cart
       userCart.cartItems = userCart.cartItems.filter(
         (o) => o.shoe.toString() !== productId,
       );
     } else {
-      userCart.cartItems[itemIndex].shoeCount--;
+      // remove the item if count less than 2 or else decrease the count
+      if (userCart.cartItems[itemIndex].shoeCount < 2) {
+        userCart.cartItems = userCart.cartItems.filter(
+          (o) => o.shoe.toString() !== productId,
+        );
+      } else {
+        userCart.cartItems[itemIndex].shoeCount--;
+      }
     }
 
     await userCart.save();
