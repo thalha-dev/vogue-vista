@@ -625,6 +625,7 @@ body {
   margin: 1em auto 0;
   border: 2px solid #94918d;
   height: 70%;
+  border-radius: 5px;
 }
 
 .single-shoe-images-in-display-container img {
@@ -632,6 +633,7 @@ body {
   height: 100%;
   display: block;
   object-fit: contain;
+  border-radius: 5px;
 }
 
 .single-shoe-images-list {
@@ -647,6 +649,7 @@ body {
   height: fit-content;
   border: 2px solid #c6d4d4;
   background: #fff;
+  border-radius: 5px;
 }
 
 .single-shoe-images-list div:hover,
@@ -750,6 +753,21 @@ body {
 @media (min-width: 600px) {
   .single-shoe-container {
     flex-direction: row;
+  }
+
+  .single-shoe-image-container {
+    flex-direction: row;
+  }
+
+  .single-shoe-images-in-display-container {
+    order: 2;
+  }
+
+  .single-shoe-images-list {
+    padding-top: 1em;
+    flex-direction: column;
+    order: 1;
+    width: fit-content;
   }
 
   .single-shoe-desc-section,
