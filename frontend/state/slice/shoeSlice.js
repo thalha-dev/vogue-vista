@@ -20,6 +20,7 @@ const initialState = {
   addToWishListStatus: "idle",
   addToCartStatus: "idle",
   removeFromWishListStatus: "idle",
+  removeFromCartStatus: "idle",
   singleShoeStatus: "idle",
 };
 
@@ -418,6 +419,72 @@ export const addToCart = createAsyncThunk(
   },
 );
 
+export const removeFromCart = createAsyncThunk(
+  "shoe/removeFromCart",
+  async (params, { getState, dispatch }) => {
+    const individualId = getState().user.individualId;
+    try {
+      const response = await api.post(
+        "/api/shoes/removeFromCart",
+        {
+          userId: individualId,
+          productId: params.productId,
+          removeItemCompletely: params.removeItemCompletely,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getState().user.token}`,
+          },
+
+          withCredentials: true,
+        },
+      );
+
+      await dispatch(getAllShoesFromCart());
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessToken());
+
+          const response = await api.post(
+            "/api/shoes/removeFromCart",
+            {
+              userId: individualId,
+              productId: params.productId,
+              removeItemCompletely: params.removeItemCompletely,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getState().user.token}`,
+              },
+
+              withCredentials: true,
+            },
+          );
+
+          await dispatch(getAllShoesFromCart());
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
 const shoeSlice = createSlice({
   name: "shoe",
   initialState: initialState,
@@ -557,6 +624,20 @@ const shoeSlice = createSlice({
         state.addToCartStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "addToCart";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(removeFromCart.pending, (state) => {
+        state.removeFromCartStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(removeFromCart.fulfilled, (state) => {
+        state.removeFromCartStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.removeFromCartStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "removeFromCart";
       });
   },
 });
@@ -573,6 +654,8 @@ export const addToWishListStatusCB = (state) => state.shoe.addToWishListStatus;
 export const addToCartStatusCB = (state) => state.shoe.addToCartStatus;
 export const removeFromWishListStatusCB = (state) =>
   state.shoe.removeFromWishListStatus;
+export const removeFromCartStatusCB = (state) =>
+  state.shoe.removeFromCartStatus;
 export const getSingleShoeStatusCB = (state) => state.shoe.singleShoeStatus;
 export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
 export const getShoeColorsCB = (state) => state.shoe.shoeColors;

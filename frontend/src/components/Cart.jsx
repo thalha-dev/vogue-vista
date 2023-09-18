@@ -9,15 +9,23 @@ import {
   cartCB,
   cartStatusCB,
   cartTotalAmountCB,
+  errorMessageCB,
+  errorMessageFromCB,
   getAllShoesFromCart,
+  removeFromCart,
+  removeFromCartStatusCB,
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
+import { sendPushNoitfication } from "../utils/toastNotify";
 
 const Cart = () => {
   const totalAmount = useSelector(cartTotalAmountCB);
   const cart = useSelector(cartCB);
   const cartStatus = useSelector(cartStatusCB);
   const loginStatus = useSelector(getLoginStatusCB);
+  const errorMessage = useSelector(errorMessageCB);
+  const errorMessageFrom = useSelector(errorMessageFromCB);
+  const removeFromCartStatus = useSelector(removeFromCartStatusCB);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,6 +33,15 @@ const Cart = () => {
       dispatch(getAllShoesFromCart());
     }
   }, [loginStatus]);
+
+  const handleRemoveProductFromCartButton = (productId) => {
+    dispatch(
+      removeFromCart({
+        productId: productId,
+        removeItemCompletely: true,
+      }),
+    );
+  };
 
   // function to render shoes from given wish list
   const renderFromCart = (cart) => {
@@ -63,7 +80,12 @@ const Cart = () => {
           </div>
           <p className="cart-product-price">
             <TbCurrencyRupee /> {ob.shoe.shoePrice}
-            <button className="cart-product-remove-button">
+            <button
+              onClick={() => {
+                handleRemoveProductFromCartButton(ob.shoe._id);
+              }}
+              className="cart-product-remove-button"
+            >
               <MdDelete />
             </button>
           </p>
@@ -93,6 +115,9 @@ const Cart = () => {
         </section>
         <section className="cart-products-section">
           {cartStatus === "success" && renderFromCart(cart)}
+          {removeFromCartStatus === "failed" &&
+            errorMessageFrom === "removeFromCart" &&
+            sendPushNoitfication(errorMessage, "error")}
         </section>
       </div>
     )
