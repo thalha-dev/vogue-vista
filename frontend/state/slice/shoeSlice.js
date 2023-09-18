@@ -21,6 +21,7 @@ const initialState = {
   addToCartStatus: "idle",
   removeFromWishListStatus: "idle",
   removeFromCartStatus: "idle",
+  uploadNewShoeStatus: "idle",
   singleShoeStatus: "idle",
 };
 
@@ -485,12 +486,91 @@ export const removeFromCart = createAsyncThunk(
   },
 );
 
+export const uploadNewShoe = createAsyncThunk(
+  "shoe/uploadNewShoe",
+  async (params, { getState, dispatch }) => {
+    try {
+      const formData = new FormData();
+      formData.set("shoeName", params.shoeName);
+      formData.set("shoePrice", params.shoePrice);
+      formData.set("shoeColor", params.shoeColor);
+      formData.set("shoesAvailable", params.shoesAvailable);
+      formData.set("shoeRating", params.shoeRating);
+      formData.set("shoeBrand", params.shoeBrand);
+      formData.set("shoeSize", params.shoeSize);
+      formData.set("shoeGenderCategory", params.shoeGenderCategory);
+
+      for (let i = 0; i < params.shoeImages.length; i++) {
+        formData.append("shoeImages", params.shoeImages[i]);
+      }
+
+      const response = await api.post("/api/shoes/uploadNewShoe", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getState().user.token}`,
+        },
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessToken());
+
+          const formData = new FormData();
+          formData.set("shoeName", params.shoeName);
+          formData.set("shoePrice", params.shoePrice);
+          formData.set("shoeColor", params.shoeColor);
+          formData.set("shoesAvailable", params.shoesAvailable);
+          formData.set("shoeRating", params.shoeRating);
+          formData.set("shoeBrand", params.shoeBrand);
+          formData.set("shoeSize", params.shoeSize);
+          formData.set("shoeGenderCategory", params.shoeGenderCategory);
+
+          for (let i = 0; i < params.shoeImages.length; i++) {
+            formData.append("shoeImages", params.shoeImages[i]);
+          }
+
+          const response = await api.post(
+            "/api/shoes/uploadNewShoe",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${getState().user.token}`,
+              },
+              withCredentials: true,
+            },
+          );
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
 const shoeSlice = createSlice({
   name: "shoe",
   initialState: initialState,
   reducers: {
-    clearAddToCartStatus: (state, action) => {
+    clearAddToCartStatus: (state) => {
       state.addToCartStatus = "idle";
+      state.errorMessageFrom = "";
+    },
+    clearStatus: (state, action) => {
+      state[action.payload] = "idle";
       state.errorMessageFrom = "";
     },
     clearAddToWishListStatus: (state) => {
@@ -647,6 +727,23 @@ const shoeSlice = createSlice({
         state.removeFromCartStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "removeFromCart";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(uploadNewShoe.pending, (state) => {
+        state.uploadNewShoeStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(uploadNewShoe.fulfilled, (state, action) => {
+        const newShoe = action.payload?.newProduct;
+        state.allShoes.push(newShoe);
+
+        state.uploadNewShoeStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(uploadNewShoe.rejected, (state, action) => {
+        state.uploadNewShoeStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "uploadNewShoe";
       });
   },
 });
@@ -661,6 +758,7 @@ export const wishListStatusCB = (state) => state.shoe.wishListStatus;
 export const cartStatusCB = (state) => state.shoe.cartStatus;
 export const addToWishListStatusCB = (state) => state.shoe.addToWishListStatus;
 export const addToCartStatusCB = (state) => state.shoe.addToCartStatus;
+export const uploadNewShoeStatusCB = (state) => state.shoe.uploadNewShoeStatus;
 export const removeFromWishListStatusCB = (state) =>
   state.shoe.removeFromWishListStatus;
 export const removeFromCartStatusCB = (state) =>
@@ -672,7 +770,7 @@ export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
 export const errorMessageCB = (state) => state.shoe.errorMessage;
 export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
 
-export const { clearAddToCartStatus, clearAddToWishListStatus } =
+export const { clearStatus, clearAddToCartStatus, clearAddToWishListStatus } =
   shoeSlice.actions;
 
 export default shoeSlice.reducer;

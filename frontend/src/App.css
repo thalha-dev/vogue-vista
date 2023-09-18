@@ -1075,3 +1075,118 @@ body {
     font-size: 0.9rem;
   }
 }
+
+/* ***************************************************************** */
+/*                          UPLOAD SHOE PAGE                         */
+/* ***************************************************************** */
+
+.upload-shoe-container {
+  width: 95%;
+  margin: 3em auto;
+  background: #c6d4d4;
+  color: #071417;
+  border-radius: 6px;
+}
+
+.upload-shoe-container h1 {
+  text-align: center;
+  padding-top: 1em;
+}
+
+.upload-shoe-form {
+  width: 95%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.upload-shoe-form input {
+  outline: none;
+  display: block;
+  width: 100%;
+  background: #c6d4d4;
+  border: none;
+  border-bottom: 1px solid #071417;
+  padding: 1em 1em 0.5em 1em;
+  margin-bottom: 1em;
+  font-size: 1.3rem;
+}
+
+.upload-shoe-form input::placeholder {
+  color: #3f4444;
+}
+
+.upload-shoe-gender-category {
+  display: flex;
+  align-items: center;
+  padding: 1em 1em 0.5em 0;
+}
+
+.upload-shoe-gender-category select {
+  margin-left: 1em;
+  padding: 1em 2em 1em 1em;
+  border-radius: 3px;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #f6fbf4;
+}
+
+.upload-shoe-gender-category select:hover,
+.upload-shoe-gender-category select:focus {
+  background: #000;
+}
+
+.upload-shoe-gender-category option {
+  font-size: 1.3rem;
+}
+
+.upload-shoe-gender-category label {
+  padding: 1em;
+  font-size: 1.3rem;
+  color: #3f4444;
+}
+
+.upload-shoe-image-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.upload-shoe-image-container label {
+  padding: 0em 2em 1em 1em;
+  margin-top: 2em;
+  color: #3f4444;
+  font-size: 1.3rem;
+}
+
+.upload-shoe-image-container input {
+  border-radius: 6px;
+  border: none;
+  padding: 1em;
+  background: #071417;
+  color: #c6d4d4;
+}
+
+.upload-shoe-image-container input:hover,
+.upload-shoe-image-container input:focus {
+  background: #000;
+}
+
+.upload-shoe-submit-button {
+  width: 85%;
+  max-width: 400px;
+  margin: 3.5em auto 2em auto;
+  padding: 1em 2em;
+  border: none;
+  outline: none;
+  display: block;
+  background: #071417;
+  color: #c6d4d4;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+.upload-shoe-submit-button:hover,
+.upload-shoe-submit-button:focus {
+  background: #000;
+}
