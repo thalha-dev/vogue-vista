@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
+  addToCart,
   getSingleShoe,
   getSingleShoeStatusCB,
   singleShoeCB,
@@ -13,6 +14,7 @@ const SingleProduct = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [imageInDisplay, setImageInDisplay] = useState("");
+  const [currentShoe, setCurrentShoe] = useState("");
   const singleShoe = useSelector(singleShoeCB);
   const singleShoeStatus = useSelector(getSingleShoeStatusCB);
 
@@ -27,6 +29,10 @@ const SingleProduct = () => {
 
   const handleImageInListHover = (imageUrl) => {
     setImageInDisplay(imageUrl);
+  };
+
+  const handleAddToCartButton = (productId) => {
+    dispatch(addToCart({ productId: productId }));
   };
 
   const stars = (rating) => {
@@ -97,7 +103,12 @@ const SingleProduct = () => {
           <div className="single-shoe-desc-price">
             <TbCurrencyRupee /> {singleShoe?.shoePrice && singleShoe.shoePrice}
           </div>
-          <button className="single-shoe-add-to-cart-button">
+          <button
+            onClick={() => {
+              handleAddToCartButton(singleShoe?._id && singleShoe._id);
+            }}
+            className="single-shoe-add-to-cart-button"
+          >
             Add to Cart
           </button>
           <button className="single-shoe-buy-now-button">Buy Now</button>

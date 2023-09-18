@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../axiosBase/api";
-import { refreshAccessTokenSubsequent } from "./userSlice";
+import { refreshAccessToken } from "./userSlice";
 
 const initialState = {
   allShoes: [],
@@ -18,6 +18,7 @@ const initialState = {
   wishListStatus: "idle",
   cartStatus: "idle",
   addToWishListStatus: "idle",
+  addToCartStatus: "idle",
   removeFromWishListStatus: "idle",
   singleShoeStatus: "idle",
 };
@@ -39,7 +40,7 @@ export const getAllShoes = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const token = getState().user.token;
           const response = await api.get("/api/shoes/getAllShoes", {
@@ -89,7 +90,7 @@ export const getAllShoesFromWishList = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const token = getState().user.token;
           const individualId = getState().user.individualId;
@@ -149,7 +150,7 @@ export const addToWishList = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const response = await api.post(
             "/api/shoes/addToWishList",
@@ -213,7 +214,7 @@ export const removeFromWishList = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const response = await api.post(
             "/api/shoes/removeFromWishList",
@@ -268,7 +269,7 @@ export const getSingleShoe = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const response = await api.get(
             `/api/shoes/getSingleShoe/${params.shoeId}`,
@@ -319,7 +320,7 @@ export const getAllShoesFromCart = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 403) {
         try {
-          await dispatch(refreshAccessTokenSubsequent());
+          await dispatch(refreshAccessToken());
 
           const token = getState().user.token;
           const individualId = getState().user.individualId;
@@ -333,6 +334,70 @@ export const getAllShoesFromCart = createAsyncThunk(
               withCredentials: true,
             },
           );
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
+export const addToCart = createAsyncThunk(
+  "shoe/addToCart",
+  async (params, { getState, dispatch }) => {
+    const individualId = getState().user.individualId;
+    try {
+      const response = await api.post(
+        "/api/shoes/addToCart",
+        {
+          userId: individualId,
+          productId: params.productId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getState().user.token}`,
+          },
+
+          withCredentials: true,
+        },
+      );
+
+      await dispatch(getAllShoesFromCart());
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessToken());
+
+          const response = await api.post(
+            "/api/shoes/addToCart",
+            {
+              userId: individualId,
+              productId: params.productId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getState().user.token}`,
+              },
+
+              withCredentials: true,
+            },
+          );
+
+          await dispatch(getAllShoesFromCart());
 
           return response.data;
         } catch (refreshError) {
@@ -478,6 +543,20 @@ const shoeSlice = createSlice({
         state.cartStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "getAllShoesFromCart";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(addToCart.pending, (state) => {
+        state.addToCartStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(addToCart.fulfilled, (state) => {
+        state.addToCartStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.addToCartStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "addToCart";
       });
   },
 });

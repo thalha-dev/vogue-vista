@@ -5,7 +5,7 @@ import {
   getIndividualErrorMessageFromCB,
   getLoginStatusCB,
   login,
-  refreshAccessTokenInitial,
+  refreshAccessToken,
 } from "../../state/slice/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -22,7 +22,7 @@ const Login = () => {
 
   useEffect(() => {
     if (loginStatus !== "success") {
-      dispatch(refreshAccessTokenInitial());
+      dispatch(refreshAccessToken());
     }
   }, []);
 
