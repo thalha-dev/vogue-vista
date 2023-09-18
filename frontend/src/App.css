@@ -1030,3 +1030,48 @@ body {
   --toastify-color-progress-light: #424341;
   --toastify-text-color-light: #071417;
 }
+
+/* ***************************************************************** */
+/*                           ADMIN LAYOUT PAGE                       */
+/* ***************************************************************** */
+
+.admin-layout-navbar {
+  padding: 0.7em 1em 1em;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.7rem;
+  align-items: center;
+  gap: 2em;
+}
+
+.admin-layout-link-container {
+  color: #c6d4d4;
+  border-radius: 5px;
+  border: 1px solid #c6d4d4;
+}
+
+.admin-layout-navbar a {
+  display: block;
+  text-decoration: none;
+  color: #c6d4d4;
+  padding: 0.7em 1em;
+  border-radius: 5px;
+}
+
+.admin-layout-navbar a:hover,
+.admin-layout-navbar a:focus {
+  background: #c6d4d4;
+  color: #071417;
+  border: none;
+}
+
+.admin-layout-navbar a.active {
+  background: #c6d4d4;
+  color: #071417;
+}
+
+@media (min-width: 480px) {
+  .admin-layout-navbar {
+    font-size: 0.9rem;
+  }
+}

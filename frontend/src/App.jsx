@@ -16,6 +16,8 @@ import Orders from "./components/Orders";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import SingleProduct from "./components/SingleProduct";
+import UploadShoe from "./components/UploadShoe";
+import AdminLayout from "./components/layouts/AdminLayout";
 
 function App() {
   const routes = createBrowserRouter(
@@ -29,6 +31,10 @@ function App() {
         <Route path="orders" element={<Orders />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        {/* admin routes */}
+        <Route path="adminspace" element={<AdminLayout />}>
+          <Route path="uploadShoe" element={<UploadShoe />} />
+        </Route>
       </Route>,
     ),
   );

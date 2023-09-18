@@ -3,12 +3,17 @@ import { BiMenu } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getLoginStatusCB, logout } from "../../../state/slice/userSlice";
+import {
+  getAdminRoleStatusCB,
+  getLoginStatusCB,
+  logout,
+} from "../../../state/slice/userSlice";
 import { getAllShoes } from "../../../state/slice/shoeSlice";
 
 const NavbarLayout = () => {
   const [toggleValue, setToggleValue] = useState(false);
   const loginStatus = useSelector(getLoginStatusCB);
+  const isAdmin = useSelector(getAdminRoleStatusCB);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -65,6 +70,13 @@ const NavbarLayout = () => {
               {loginStatus === "success" ? (
                 <li>
                   <NavLink to="/cart">Cart</NavLink>
+                </li>
+              ) : (
+                ""
+              )}
+              {loginStatus === "success" && isAdmin ? (
+                <li>
+                  <NavLink to="/adminspace">Admin</NavLink>
                 </li>
               ) : (
                 ""
