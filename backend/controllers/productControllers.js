@@ -320,6 +320,8 @@ const addToCart = async (req, res, next) => {
         userCart.cartItems[itemIndex].shoeCount < productExists.shoesAvailable
       ) {
         userCart.cartItems[itemIndex].shoeCount++;
+      } else {
+        throw createHttpError(400, "Shoe stock limit exceeded");
       }
     } else {
       userCart.cartItems.push({
