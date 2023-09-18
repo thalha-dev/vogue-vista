@@ -490,9 +490,14 @@ export const cartTotalAmountCB = (state) => state.shoe.cartTotalAmount;
 export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
 export const wishListStatusCB = (state) => state.shoe.wishListStatus;
 export const cartStatusCB = (state) => state.shoe.cartStatus;
+export const addToWishListStatusCB = (state) => state.shoe.addToWishListStatus;
+export const removeFromWishListStatusCB = (state) =>
+  state.shoe.removeFromWishListStatus;
 export const getSingleShoeStatusCB = (state) => state.shoe.singleShoeStatus;
 export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
 export const getShoeColorsCB = (state) => state.shoe.shoeColors;
 export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
+export const errorMessageCB = (state) => state.shoe.errorMessage;
+export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
 
 export default shoeSlice.reducer;

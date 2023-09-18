@@ -601,7 +601,7 @@ body {
 }
 
 /* ***************************************************************** */
-/*                         SINGLE IMAGE PAGE                         */
+/*                         SINGLE PRODUCT PAGE                       */
 /* ***************************************************************** */
 
 .single-shoe-container {
@@ -1019,4 +1019,14 @@ body {
   .cart-total-amount-container {
     font-size: 0.7rem;
   }
+}
+
+/* ***************************************************************** */
+/*                      REACT TOAST COLOR OVERWRITE                  */
+/* ***************************************************************** */
+
+:root {
+  --toastify-color-light: #c6d4d4;
+  --toastify-color-progress-light: #424341;
+  --toastify-text-color-light: #071417;
 }

@@ -4,11 +4,7 @@ import { GrClose } from "react-icons/gr";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoginStatusCB, logout } from "../../../state/slice/userSlice";
-import {
-  getAllShoes,
-  getAllShoesFromCart,
-  getAllShoesFromWishList,
-} from "../../../state/slice/shoeSlice";
+import { getAllShoes } from "../../../state/slice/shoeSlice";
 
 const NavbarLayout = () => {
   const [toggleValue, setToggleValue] = useState(false);
@@ -18,8 +14,6 @@ const NavbarLayout = () => {
   useEffect(() => {
     if (loginStatus === "success") {
       dispatch(getAllShoes());
-      dispatch(getAllShoesFromWishList());
-      dispatch(getAllShoesFromCart());
     }
   }, [loginStatus]);
 

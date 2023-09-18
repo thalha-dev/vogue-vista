@@ -2,17 +2,36 @@ import { RxStarFilled } from "react-icons/rx";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import {
+  errorMessageCB,
+  errorMessageFromCB,
+  getAllShoesFromWishList,
   removeFromWishList,
+  removeFromWishListStatusCB,
   wishListCB,
   wishListStatusCB,
 } from "../../state/slice/shoeSlice";
-import { Link } from "react-router-dom";
+import { getLoginStatusCB } from "../../state/slice/userSlice";
+import { useEffect } from "react";
+import { sendPushNoitfication } from "../utils/toastNotify";
 
 const WishList = () => {
   const wishListProducts = useSelector(wishListCB);
   const wishListProductsStatus = useSelector(wishListStatusCB);
+  const removeFromWishListStatus = useSelector(removeFromWishListStatusCB);
+  const errorMessage = useSelector(errorMessageCB);
+  const loginStatus = useSelector(getLoginStatusCB);
+  const wishListStatus = useSelector(wishListStatusCB);
+  const errorMessageFrom = useSelector(errorMessageFromCB);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (loginStatus === "success" && wishListStatus !== "success") {
+      dispatch(getAllShoesFromWishList());
+    }
+  }, [loginStatus]);
 
   // function to handle remove from wishlist button click
   const handleRemoveButtonClick = (productId) => {
@@ -73,6 +92,12 @@ const WishList = () => {
     <div className="wishlist-container">
       <section className="wishlist-products-display-section">
         {wishListProductsStatus && renderShoesFromWishList(wishListProducts)}
+        {wishListProductsStatus === "failed" &&
+          errorMessageFrom === "getAllShoesFromWishList" &&
+          sendPushNoitfication(errorMessage, "error")}
+        {removeFromWishListStatus === "failed" &&
+          errorMessageFrom === "removeFromWishList" &&
+          sendPushNoitfication(errorMessage, "error")}
       </section>
     </div>
   );

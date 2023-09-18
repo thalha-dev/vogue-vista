@@ -1,19 +1,30 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { FaArrowUp } from "react-icons/fa";
 import { FaArrowDown } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { useEffect } from "react";
 
 import {
   cartCB,
   cartStatusCB,
   cartTotalAmountCB,
+  getAllShoesFromCart,
 } from "../../state/slice/shoeSlice";
+import { getLoginStatusCB } from "../../state/slice/userSlice";
 
 const Cart = () => {
   const totalAmount = useSelector(cartTotalAmountCB);
   const cart = useSelector(cartCB);
   const cartStatus = useSelector(cartStatusCB);
+  const loginStatus = useSelector(getLoginStatusCB);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (loginStatus === "success" && cartStatus !== "success") {
+      dispatch(getAllShoesFromCart());
+    }
+  }, [loginStatus]);
 
   // function to render shoes from given wish list
   const renderFromCart = (cart) => {
@@ -62,27 +73,29 @@ const Cart = () => {
   };
 
   return (
-    <div className="cart-container">
-      <section className="cart-buy-section">
-        <div className="cart-buy-sticky-conatiner">
-          <div className="cart-total-amount-container">
-            <p>
-              Subtotal{" "}
-              {cartStatus === "success" && cart.cartItems.length > 1
-                ? `(${cart.cartItems.length} shoes):`
-                : `(${cart.cartItems.length} shoe):`}
-            </p>
-            <h2 className="cart-total-amount">
-              <TbCurrencyRupee className="cart-rupee-icon" /> {totalAmount}
-            </h2>
+    cartStatus === "success" && (
+      <div className="cart-container">
+        <section className="cart-buy-section">
+          <div className="cart-buy-sticky-conatiner">
+            <div className="cart-total-amount-container">
+              <p>
+                Subtotal{" "}
+                {cartStatus === "success" && cart.cartItems.length > 1
+                  ? `(${cart.cartItems.length} shoes):`
+                  : `(${cart.cartItems.length} shoe):`}
+              </p>
+              <h2 className="cart-total-amount">
+                <TbCurrencyRupee className="cart-rupee-icon" /> {totalAmount}
+              </h2>
+            </div>
+            <button className="cart-buy-button">Proceed to Buy</button>
           </div>
-          <button className="cart-buy-button">Proceed to Buy</button>
-        </div>
-      </section>
-      <section className="cart-products-section">
-        {cartStatus === "success" && renderFromCart(cart)}
-      </section>
-    </div>
+        </section>
+        <section className="cart-products-section">
+          {cartStatus === "success" && renderFromCart(cart)}
+        </section>
+      </div>
+    )
   );
 };
 
