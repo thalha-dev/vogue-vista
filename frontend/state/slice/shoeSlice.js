@@ -488,7 +488,16 @@ export const removeFromCart = createAsyncThunk(
 const shoeSlice = createSlice({
   name: "shoe",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    clearAddToCartStatus: (state, action) => {
+      state.addToCartStatus = "idle";
+      state.errorMessageFrom = "";
+    },
+    clearAddToWishListStatus: (state) => {
+      state.addToWishListStatus = "idle";
+      state.errorMessageFrom = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllShoes.pending, (state) => {
@@ -662,5 +671,8 @@ export const getShoeColorsCB = (state) => state.shoe.shoeColors;
 export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
 export const errorMessageCB = (state) => state.shoe.errorMessage;
 export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
+
+export const { clearAddToCartStatus, clearAddToWishListStatus } =
+  shoeSlice.actions;
 
 export default shoeSlice.reducer;

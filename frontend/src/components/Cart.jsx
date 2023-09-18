@@ -4,6 +4,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaArrowDown } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 import {
   addToCart,
@@ -11,6 +12,7 @@ import {
   cartCB,
   cartStatusCB,
   cartTotalAmountCB,
+  clearAddToCartStatus,
   errorMessageCB,
   errorMessageFromCB,
   getAllShoesFromCart,
@@ -18,7 +20,6 @@ import {
   removeFromCartStatusCB,
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
-import { sendPushNoitfication } from "../utils/toastNotify";
 
 const Cart = () => {
   const totalAmount = useSelector(cartTotalAmountCB);
@@ -57,6 +58,15 @@ const Cart = () => {
 
   const handleIncreaseProductQantityFromCartButton = (productId) => {
     dispatch(addToCart({ productId: productId }));
+  };
+
+  const handleNotify = (message, cause) => {
+    toast.error(message);
+    if (cause === "addToCartFailed") {
+      setTimeout(() => {
+        dispatch(clearAddToCartStatus());
+      }, 500);
+    }
   };
 
   // function to render shoes from given wish list
@@ -143,10 +153,10 @@ const Cart = () => {
           {cartStatus === "success" && renderFromCart(cart)}
           {removeFromCartStatus === "failed" &&
             errorMessageFrom === "removeFromCart" &&
-            sendPushNoitfication(errorMessage, "error")}
+            handleNotify(errorMessage, "removeFromCartFailed")}
           {addToCartStatus === "failed" &&
             errorMessageFrom === "addToCart" &&
-            sendPushNoitfication(errorMessage, "error")}
+            handleNotify(errorMessage, "addToCartFailed")}
         </section>
       </div>
     )

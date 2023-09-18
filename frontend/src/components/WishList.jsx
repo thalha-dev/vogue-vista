@@ -3,6 +3,7 @@ import { TbCurrencyRupee } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import {
   errorMessageCB,
@@ -15,7 +16,6 @@ import {
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
 import { useEffect } from "react";
-import { sendPushNoitfication } from "../utils/toastNotify";
 
 const WishList = () => {
   const wishListProducts = useSelector(wishListCB);
@@ -36,6 +36,10 @@ const WishList = () => {
   // function to handle remove from wishlist button click
   const handleRemoveButtonClick = (productId) => {
     dispatch(removeFromWishList({ productId: productId }));
+  };
+
+  const handleNotify = (message, cause) => {
+    toast.error(message);
   };
 
   // function to render shoes from given wish list
@@ -94,10 +98,10 @@ const WishList = () => {
         {wishListProductsStatus && renderShoesFromWishList(wishListProducts)}
         {wishListProductsStatus === "failed" &&
           errorMessageFrom === "getAllShoesFromWishList" &&
-          sendPushNoitfication(errorMessage, "error")}
+          handleNotify(errorMessage, "getAllShoesFromWishListFailed")}
         {removeFromWishListStatus === "failed" &&
           errorMessageFrom === "removeFromWishList" &&
-          sendPushNoitfication(errorMessage, "error")}
+          handleNotify(errorMessage, "removeFromWishListFailed")}
       </section>
     </div>
   );

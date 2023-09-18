@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   errorMessageCB,
   errorMessageFromCB,
@@ -9,10 +10,10 @@ import {
   getSingleShoeStatusCB,
   singleShoeCB,
   addToCartStatusCB,
+  clearAddToCartStatus,
 } from "../../state/slice/shoeSlice";
 import { HiStar } from "react-icons/hi";
 import { TbCurrencyRupee } from "react-icons/tb";
-import { sendPushNoitfication } from "../utils/toastNotify";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -38,6 +39,16 @@ const SingleProduct = () => {
 
   const handleAddToCartButton = (productId) => {
     dispatch(addToCart({ productId: productId }));
+  };
+
+  const handleNotify = (message, cause) => {
+    toast.error(message);
+
+    if (cause === "addToCartFalied") {
+      setTimeout(() => {
+        dispatch(clearAddToCartStatus());
+      }, 500);
+    }
   };
 
   const stars = (rating) => {
@@ -121,7 +132,7 @@ const SingleProduct = () => {
       </div>
       {addToCartStatus === "failed" &&
         errorMessageFrom === "addToCart" &&
-        sendPushNoitfication(errorMessage, "error")}
+        handleNotify(errorMessage, "addToCartFalied")}
     </div>
   );
 };
