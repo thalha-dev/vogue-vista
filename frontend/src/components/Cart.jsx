@@ -6,6 +6,8 @@ import { MdDelete } from "react-icons/md";
 import { useEffect } from "react";
 
 import {
+  addToCart,
+  addToCartStatusCB,
   cartCB,
   cartStatusCB,
   cartTotalAmountCB,
@@ -26,6 +28,7 @@ const Cart = () => {
   const errorMessage = useSelector(errorMessageCB);
   const errorMessageFrom = useSelector(errorMessageFromCB);
   const removeFromCartStatus = useSelector(removeFromCartStatusCB);
+  const addToCartStatus = useSelector(addToCartStatusCB);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -43,6 +46,19 @@ const Cart = () => {
     );
   };
 
+  const handleDecreaseProductQantityFromCartButton = (productId) => {
+    dispatch(
+      removeFromCart({
+        productId: productId,
+        removeItemCompletely: false,
+      }),
+    );
+  };
+
+  const handleIncreaseProductQantityFromCartButton = (productId) => {
+    dispatch(addToCart({ productId: productId }));
+  };
+
   // function to render shoes from given wish list
   const renderFromCart = (cart) => {
     return cart.cartItems.map((ob) => (
@@ -58,11 +74,20 @@ const Cart = () => {
             <button
               tabIndex="0"
               className="cart-product-quantity-increase-button"
+              onClick={() => {
+                handleIncreaseProductQantityFromCartButton(ob.shoe._id);
+              }}
             >
               <FaArrowUp />
             </button>
             <div className="cart-product-current-quantity">{ob.shoeCount}</div>
-            <button className="cart-product-quantity-decrease-button">
+            <button
+              tabIndex="0"
+              onClick={() => {
+                handleDecreaseProductQantityFromCartButton(ob.shoe._id);
+              }}
+              className="cart-product-quantity-decrease-button"
+            >
               <FaArrowDown />
             </button>
           </div>
@@ -95,7 +120,8 @@ const Cart = () => {
   };
 
   return (
-    cartStatus === "success" && (
+    cartStatus === "success" &&
+    totalAmount > 0 && (
       <div className="cart-container">
         <section className="cart-buy-section">
           <div className="cart-buy-sticky-conatiner">
@@ -117,6 +143,9 @@ const Cart = () => {
           {cartStatus === "success" && renderFromCart(cart)}
           {removeFromCartStatus === "failed" &&
             errorMessageFrom === "removeFromCart" &&
+            sendPushNoitfication(errorMessage, "error")}
+          {addToCartStatus === "failed" &&
+            errorMessageFrom === "addToCart" &&
             sendPushNoitfication(errorMessage, "error")}
         </section>
       </div>
