@@ -7,6 +7,7 @@ import {
   wishListCB,
   wishListStatusCB,
 } from "../../state/slice/shoeSlice";
+import { Link } from "react-router-dom";
 
 const WishList = () => {
   const wishListProducts = useSelector(wishListCB);
@@ -23,11 +24,16 @@ const WishList = () => {
     return shoes.map((shoe) => (
       <div key={shoe?._id} className="wishlist-product-container">
         <div className="wishlist-product-upper-container">
-          <img
-            className="wishlist-product-image"
-            src={shoe?.shoeImages[0]?.imageUrl}
-            alt={`product image of the shoe ${shoe?.shoeName}`}
-          />
+          <Link
+            className="wishlist-product-link"
+            to={`/singleProduct/${shoe._id}`}
+          >
+            <img
+              className="wishlist-product-image"
+              src={shoe?.shoeImages[0]?.imageUrl}
+              alt={`product image of the shoe ${shoe?.shoeName}`}
+            />
+          </Link>
           <div className="wishlist-product-rating-wish-container">
             <span className="wishlist-product-rating">
               <RxStarFilled />
@@ -43,17 +49,22 @@ const WishList = () => {
             </button>
           </div>
         </div>
-        <div className="wishlist-product-lower-container">
-          <p className="wishlist-product-brand">{shoe.shoeBrand}</p>
-          <p className="wishlist-product-name">{shoe.shoeName}</p>
-          <div className="wishlist-product-size-color-container">
-            <p className="wishlist-product-size">{shoe.shoeSize} UK</p>
-            <p className="wishlist-product-color">{shoe.shoeColor}</p>
+        <Link
+          className="wishlist-product-link"
+          to={`/singleProduct/${shoe._id}`}
+        >
+          <div className="wishlist-product-lower-container">
+            <p className="wishlist-product-brand">{shoe.shoeBrand}</p>
+            <p className="wishlist-product-name">{shoe.shoeName}</p>
+            <div className="wishlist-product-size-color-container">
+              <p className="wishlist-product-size">{shoe.shoeSize} UK</p>
+              <p className="wishlist-product-color">{shoe.shoeColor}</p>
+            </div>
+            <p className="wishlist-product-price">
+              <TbCurrencyRupee /> {shoe.shoePrice}
+            </p>
           </div>
-          <p className="wishlist-product-price">
-            <TbCurrencyRupee /> {shoe.shoePrice}
-          </p>
-        </div>
+        </Link>
       </div>
     ));
   };

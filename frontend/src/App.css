@@ -528,7 +528,8 @@ body {
   align-items: center;
 }
 
-.home-product-link {
+.home-product-link,
+.wishlist-product-link {
   text-decoration: none;
   color: #000;
 }
