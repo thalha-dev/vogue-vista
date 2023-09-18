@@ -570,6 +570,7 @@ export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
 export const wishListStatusCB = (state) => state.shoe.wishListStatus;
 export const cartStatusCB = (state) => state.shoe.cartStatus;
 export const addToWishListStatusCB = (state) => state.shoe.addToWishListStatus;
+export const addToCartStatusCB = (state) => state.shoe.addToCartStatus;
 export const removeFromWishListStatusCB = (state) =>
   state.shoe.removeFromWishListStatus;
 export const getSingleShoeStatusCB = (state) => state.shoe.singleShoeStatus;

@@ -2,21 +2,26 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
+  errorMessageCB,
+  errorMessageFromCB,
   addToCart,
   getSingleShoe,
   getSingleShoeStatusCB,
   singleShoeCB,
+  addToCartStatusCB,
 } from "../../state/slice/shoeSlice";
 import { HiStar } from "react-icons/hi";
 import { TbCurrencyRupee } from "react-icons/tb";
+import { sendPushNoitfication } from "../utils/toastNotify";
 
 const SingleProduct = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [imageInDisplay, setImageInDisplay] = useState("");
-  const [currentShoe, setCurrentShoe] = useState("");
   const singleShoe = useSelector(singleShoeCB);
-  const singleShoeStatus = useSelector(getSingleShoeStatusCB);
+  const addToCartStatus = useSelector(addToCartStatusCB);
+  const errorMessage = useSelector(errorMessageCB);
+  const errorMessageFrom = useSelector(errorMessageFromCB);
 
   useEffect(() => {
     dispatch(getSingleShoe({ shoeId: id }));
@@ -114,6 +119,9 @@ const SingleProduct = () => {
           <button className="single-shoe-buy-now-button">Buy Now</button>
         </section>
       </div>
+      {addToCartStatus === "failed" &&
+        errorMessageFrom === "addToCart" &&
+        sendPushNoitfication(errorMessage, "error")}
     </div>
   );
 };
