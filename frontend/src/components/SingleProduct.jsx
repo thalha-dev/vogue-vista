@@ -7,13 +7,13 @@ import {
   errorMessageFromCB,
   addToCart,
   getSingleShoe,
-  getSingleShoeStatusCB,
   singleShoeCB,
   addToCartStatusCB,
   clearAddToCartStatus,
 } from "../../state/slice/shoeSlice";
 import { HiStar } from "react-icons/hi";
 import { TbCurrencyRupee } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -127,7 +127,12 @@ const SingleProduct = () => {
           >
             Add to Cart
           </button>
-          <button className="single-shoe-buy-now-button">Buy Now</button>
+          <Link
+            className="single-shoe-buy-now-link"
+            to={`/currentOrderSummary/single`}
+          >
+            Buy Now
+          </Link>
         </section>
       </div>
       {addToCartStatus === "failed" &&

@@ -18,6 +18,9 @@ import Signup from "./components/Signup";
 import SingleProduct from "./components/SingleProduct";
 import UploadShoe from "./components/UploadShoe";
 import AdminLayout from "./components/layouts/AdminLayout";
+import CurrentOrderSummary from "./components/CurrentOrderSummary";
+import PaymentPage from "./components/PaymentPage";
+import PaymentSuccessPage from "./components/PaymentSuccessPage";
 
 function App() {
   const routes = createBrowserRouter(
@@ -29,7 +32,16 @@ function App() {
         <Route path="cart" element={<Cart />} />
         <Route path="singleProduct/:id" element={<SingleProduct />} />
         <Route path="orders" element={<Orders />} />
+        <Route
+          path="currentOrderSummary/:orderType"
+          element={<CurrentOrderSummary />}
+        />
         <Route path="login" element={<Login />} />
+        <Route
+          path="payment/:id/:orderType/:deliveryAddress"
+          element={<PaymentPage />}
+        />
+        <Route path="paymentSuccess" element={<PaymentSuccessPage />} />
         <Route path="signup" element={<Signup />} />
         {/* admin routes */}
         <Route path="adminspace" element={<AdminLayout />}>
