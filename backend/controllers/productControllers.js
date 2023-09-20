@@ -680,8 +680,10 @@ const confirmOrder = async (req, res, next) => {
         _id: order.productsInOrder[i].shoe,
       }).exec();
 
-      if (product.shoesAvailable > 0) {
-        product.shoesAvailable = product.shoesAvailable - 1;
+      for (let j = 0; j < order.productsInOrder[i].shoeCount; j++) {
+        if (product.shoesAvailable > 0) {
+          product.shoesAvailable = product.shoesAvailable - 1;
+        }
       }
 
       await product.save();
