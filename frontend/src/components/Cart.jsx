@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { TbCurrencyRupee } from "react-icons/tb";
 import { FaArrowUp } from "react-icons/fa";
 import { FaArrowDown } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -20,6 +19,8 @@ import {
   removeFromCartStatusCB,
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
+import { Link } from "react-router-dom";
+import { numberToInr } from "../utils/utils";
 
 const Cart = () => {
   const totalAmount = useSelector(cartTotalAmountCB);
@@ -114,7 +115,7 @@ const Cart = () => {
             <p className="cart-product-color">{ob.shoe.shoeColor}</p>
           </div>
           <p className="cart-product-price">
-            <TbCurrencyRupee /> {ob.shoe.shoePrice}
+            {numberToInr(ob.shoe.shoePrice)}
             <button
               onClick={() => {
                 handleRemoveProductFromCartButton(ob.shoe._id);
@@ -142,11 +143,11 @@ const Cart = () => {
                   ? `(${cart.cartItems.length} shoes):`
                   : `(${cart.cartItems.length} shoe):`}
               </p>
-              <h2 className="cart-total-amount">
-                <TbCurrencyRupee className="cart-rupee-icon" /> {totalAmount}
-              </h2>
+              <h2 className="cart-total-amount">{numberToInr(totalAmount)}</h2>
             </div>
-            <button className="cart-buy-button">Proceed to Buy</button>
+            <Link to={`/currentOrderSummary/cart`} className="cart-buy-link">
+              Proceed to Buy
+            </Link>
           </div>
         </section>
         <section className="cart-products-section">

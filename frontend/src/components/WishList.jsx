@@ -1,5 +1,4 @@
 import { RxStarFilled } from "react-icons/rx";
-import { TbCurrencyRupee } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -16,6 +15,7 @@ import {
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
 import { useEffect } from "react";
+import { numberToInr } from "../utils/utils";
 
 const WishList = () => {
   const wishListProducts = useSelector(wishListCB);
@@ -84,7 +84,7 @@ const WishList = () => {
               <p className="wishlist-product-color">{shoe.shoeColor}</p>
             </div>
             <p className="wishlist-product-price">
-              <TbCurrencyRupee /> {shoe.shoePrice}
+              {numberToInr(shoe.shoePrice)}
             </p>
           </div>
         </Link>

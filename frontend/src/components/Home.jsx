@@ -1,7 +1,6 @@
 import { BiSearch } from "react-icons/bi";
 import { BiFilterAlt } from "react-icons/bi";
 import { RxStarFilled } from "react-icons/rx";
-import { TbCurrencyRupee } from "react-icons/tb";
 import { AiFillHeart } from "react-icons/ai";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +12,7 @@ import {
   getshoeSizesCB,
 } from "../../state/slice/shoeSlice";
 import { Link } from "react-router-dom";
+import { numberToInr } from "../utils/utils";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -138,9 +138,7 @@ const Home = () => {
               <p className="home-product-size">{shoe.shoeSize} UK</p>
               <p className="home-product-color">{shoe.shoeColor}</p>
             </div>
-            <p className="home-product-price">
-              <TbCurrencyRupee /> {shoe.shoePrice}
-            </p>
+            <p className="home-product-price">{numberToInr(shoe.shoePrice)}</p>
           </div>
         </Link>
       </div>

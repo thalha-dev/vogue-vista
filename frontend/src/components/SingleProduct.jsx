@@ -14,6 +14,7 @@ import {
 import { HiStar } from "react-icons/hi";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { numberToInr } from "../utils/utils";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -117,7 +118,7 @@ const SingleProduct = () => {
             </p>
           </div>
           <div className="single-shoe-desc-price">
-            <TbCurrencyRupee /> {singleShoe?.shoePrice && singleShoe.shoePrice}
+            {singleShoe?.shoePrice && numberToInr(singleShoe.shoePrice)}
           </div>
           <button
             onClick={() => {
