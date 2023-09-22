@@ -6,6 +6,7 @@ const initialState = {
   allShoes: [],
   wishList: [],
   cart: [],
+  orders: [],
   shoeBrands: [],
   shoeSizes: [],
   shoeColors: [],
@@ -17,6 +18,7 @@ const initialState = {
   allShoesStatus: "idle",
   wishListStatus: "idle",
   cartStatus: "idle",
+  getUserOrdersStatus: "idle",
   addToWishListStatus: "idle",
   addToCartStatus: "idle",
   removeFromWishListStatus: "idle",
@@ -486,6 +488,55 @@ export const removeFromCart = createAsyncThunk(
   },
 );
 
+export const getUserOrders = createAsyncThunk(
+  "shoe/getUserOrders",
+  async (_, { getState, dispatch }) => {
+    try {
+      const token = getState().user.token;
+      const userId = getState().user.individualId;
+
+      const response = await api.get(`/api/shoes/getUserOrders/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          await dispatch(refreshAccessToken());
+
+          const token = getState().user.token;
+          const userId = getState().user.individualId;
+
+          const response = await api.get(`/api/shoes/getUserOrders/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          });
+
+          return response.data;
+        } catch (refreshError) {
+          const errorMessage = refreshError.response?.data?.error;
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+          throw refreshError;
+        }
+      } else {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+        throw error;
+      }
+    }
+  },
+);
+
 export const uploadNewShoe = createAsyncThunk(
   "shoe/uploadNewShoe",
   async (params, { getState, dispatch }) => {
@@ -744,6 +795,21 @@ const shoeSlice = createSlice({
         state.uploadNewShoeStatus = "failed";
         state.errorMessage = action.error.message;
         state.errorMessageFrom = "uploadNewShoe";
+      })
+      //---------------------------------------------------------------------------
+      .addCase(getUserOrders.pending, (state) => {
+        state.getUserOrdersStatus = "loading";
+        state.errorMessage = null;
+      })
+      .addCase(getUserOrders.fulfilled, (state, action) => {
+        state.orders = action.payload || [];
+        state.getUserOrdersStatus = "success";
+        state.errorMessage = null;
+      })
+      .addCase(getUserOrders.rejected, (state, action) => {
+        state.getUserOrdersStatus = "failed";
+        state.errorMessage = action.error.message;
+        state.errorMessageFrom = "getUserOrders";
       });
   },
 });
@@ -751,6 +817,8 @@ const shoeSlice = createSlice({
 export const allShoesCB = (state) => state.shoe.allShoes;
 export const wishListCB = (state) => state.shoe.wishList;
 export const cartCB = (state) => state.shoe.cart;
+export const ordersCB = (state) => state.shoe.orders;
+export const getUserOrdersStatusCB = (state) => state.shoe.getUserOrdersStatus;
 export const singleShoeCB = (state) => state.shoe.singleShoe;
 export const cartTotalAmountCB = (state) => state.shoe.cartTotalAmount;
 export const allShoesStatusCB = (state) => state.shoe.allShoesStatus;
