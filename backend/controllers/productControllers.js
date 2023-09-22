@@ -695,6 +695,29 @@ const confirmOrder = async (req, res, next) => {
   }
 };
 
+// middleware to get all orders of a specific user from db
+const getUserOrders = async (req, res, next) => {
+  const userId = req.params.userId;
+  try {
+    // Find the order and populate the 'shoe' field in 'cartItems'
+    const orders = await OrderModel.find({
+      userId: userId,
+      isOrderCompleted: true,
+    })
+      .sort({ createdAt: -1 })
+      .populate("productsInOrder.shoe")
+      .exec();
+
+    if (!orders) {
+      throw createHttpError(404, "Nothing in the cart");
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   uploadNewShoe,
   getAllShoes,
@@ -709,4 +732,5 @@ module.exports = {
   getAllShoesFromWishList,
   stripePaymentIntent,
   confirmOrder,
+  getUserOrders,
 };

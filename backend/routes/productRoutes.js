@@ -17,6 +17,7 @@ const {
   getAllShoesFromWishList,
   stripePaymentIntent,
   confirmOrder,
+  getUserOrders,
 } = require("../controllers/productControllers");
 
 const verifyJWT = require("../middlewares/auth/verifyJWT");
@@ -25,6 +26,7 @@ const ROLES_LIST = require("../config/roles_list");
 
 router.get("/getAllShoes", verifyJWT, getAllShoes);
 router.get("/getAllShoesFromCart/:userId", verifyJWT, getAllShoesFromCart);
+router.get("/getUserOrders/:userId", verifyJWT, getUserOrders);
 router.get(
   "/getAllShoesFromWishList/:userId",
   verifyJWT,
