@@ -38,9 +38,11 @@ const PaymentSuccessPage = () => {
   }, []);
 
   return (
-    <div>
-      Payment successful. You are being redirected to the orders page. Please do
-      not close the page.
+    <div className="payment-success-page-container">
+      <p>
+        Payment successful. You are being redirected to the orders page. Please
+        do not close the page.
+      </p>
     </div>
   );
 };
