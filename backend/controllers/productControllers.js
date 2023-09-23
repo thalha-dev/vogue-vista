@@ -304,6 +304,10 @@ const addToCart = async (req, res, next) => {
       throw createHttpError(400, "Invalid Product ID");
     }
 
+    if (productExists.shoesAvailable < 1) {
+      throw createHttpError(404, "Product out of stock");
+    }
+
     // add the product id only if doesn't exist before
     let itemExistInCart = false;
     let itemIndex = 0;
