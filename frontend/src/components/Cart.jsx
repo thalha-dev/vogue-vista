@@ -81,10 +81,15 @@ const Cart = () => {
       >
         <div className="cart-product-image-quantity-container">
           <div className="cart-product-image-container">
-            <img
-              src={ob.shoe.shoeImages[0].imageUrl}
-              alt="image of the product in cart"
-            />
+            <Link
+              className="cart-link-to-single-product-page"
+              to={`/singleProduct/${ob.shoe._id}`}
+            >
+              <img
+                src={ob.shoe.shoeImages[0].imageUrl}
+                alt="image of the product in cart"
+              />
+            </Link>
           </div>
           <div className="cart-product-quantity-container">
             <button
@@ -109,7 +114,9 @@ const Cart = () => {
           </div>
         </div>
         <div className="cart-product-description-container">
-          <p className="cart-product-name">{ob.shoe.shoeName}</p>
+          <Link className="cart-link-to-single-product-page" to={`/singleProduct/${ob.shoe._id}`}>
+            <p className="cart-product-name">{ob.shoe.shoeName}</p>
+          </Link>
           <p className="cart-product-brand">{ob.shoe.shoeBrand}</p>
           <div className="cart-product-size-container">
             <p>SIZE</p>

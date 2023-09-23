@@ -1003,6 +1003,11 @@ body {
   background: #ff777c;
 }
 
+.cart-link-to-single-product-page {
+  text-decoration: none;
+  color: var(--light-1);
+}
+
 @media (min-width: 700px) {
   .cart-product-info-container {
     display: flex;
