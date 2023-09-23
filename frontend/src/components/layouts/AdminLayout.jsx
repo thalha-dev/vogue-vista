@@ -7,6 +7,9 @@ const AdminLayout = () => {
         <div className="admin-layout-link-container">
           <NavLink to="uploadShoe">Upload Shoe</NavLink>
         </div>
+        <div className="admin-layout-link-container">
+          <NavLink to="productsAdminView">Manage Shoes</NavLink>
+        </div>
       </nav>
       <Outlet />
     </div>

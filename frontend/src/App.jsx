@@ -22,6 +22,7 @@ import AdminLayout from "./components/layouts/AdminLayout";
 import CurrentOrderSummary from "./components/CurrentOrderSummary";
 import PaymentPage from "./components/PaymentPage";
 import PaymentSuccessPage from "./components/PaymentSuccessPage";
+import ProductsAdminView from "./components/ProductsAdminView";
 
 import {
   getAdminRoleStatusCB,
@@ -87,6 +88,16 @@ function App() {
             element={
               loginStatus === "success" && adminStatus ? (
                 <UploadShoe />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="productsAdminView"
+            element={
+              loginStatus === "success" && adminStatus ? (
+                <ProductsAdminView />
               ) : (
                 <Login />
               )
