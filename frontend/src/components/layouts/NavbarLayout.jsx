@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
 import { useEffect, useState } from "react";
@@ -97,9 +97,9 @@ const NavbarLayout = () => {
               )}
               {loginStatus === "success" ? (
                 <li>
-                  <NavLink onClick={handleLogout} to="/">
+                  <Link onClick={handleLogout} to="/">
                     Logout
-                  </NavLink>
+                  </Link>
                 </li>
               ) : (
                 ""
