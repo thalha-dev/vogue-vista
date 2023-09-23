@@ -17,6 +17,10 @@ body {
   color: var(--light-1);
 }
 
+.display-none {
+  display: none;
+}
+
 /* ***************************************************************** */
 /*                              HEADER                               */
 /*               (desktop first approach only for HEADER)            */

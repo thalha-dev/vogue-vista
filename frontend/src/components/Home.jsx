@@ -106,7 +106,12 @@ const Home = () => {
   // function to render shoes from given array of products
   const renderShoes = (shoes) => {
     return shoes.map((shoe) => (
-      <div key={shoe?._id} className="home-product-container">
+      <div
+        key={shoe?._id}
+        className={`home-product-container ${
+          shoe.shoesAvailable === 0 ? "display-none" : ""
+        }`}
+      >
         <div className="home-product-upper-container">
           <Link className="home-product-link" to={`/singleProduct/${shoe._id}`}>
             <img

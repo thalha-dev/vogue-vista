@@ -45,7 +45,12 @@ const WishList = () => {
   // function to render shoes from given wish list
   const renderShoesFromWishList = (shoes) => {
     return shoes.map((shoe) => (
-      <div key={shoe?._id} className="wishlist-product-container">
+      <div
+        key={shoe?._id}
+        className={`wishlist-product-container ${
+          shoe.shoesAvailable === 0 ? "display-none" : ""
+        }`}
+      >
         <div className="wishlist-product-upper-container">
           <Link
             className="wishlist-product-link"

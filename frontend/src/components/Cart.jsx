@@ -73,7 +73,12 @@ const Cart = () => {
   // function to render shoes from given wish list
   const renderFromCart = (cart) => {
     return cart.cartItems.map((ob) => (
-      <div key={ob.shoe._id} className="cart-product-info-container">
+      <div
+        key={ob.shoe._id}
+        className={`cart-product-info-container  ${
+          ob.shoe.shoesAvailable === 0 ? "display-none" : ""
+        }`}
+      >
         <div className="cart-product-image-quantity-container">
           <div className="cart-product-image-container">
             <img
