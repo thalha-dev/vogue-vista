@@ -359,7 +359,7 @@ const addToCart = async (req, res, next) => {
 const removeFromCart = async (req, res, next) => {
   const userId = req.body.userId;
   const productId = req.body.productId;
-  const removeItemCompletely = req.body.removeItemCompletely;
+  let removeItemCompletely = req.body.removeItemCompletely;
 
   try {
     if (!userId) {
@@ -402,6 +402,7 @@ const removeFromCart = async (req, res, next) => {
     } else {
       // remove the item if count less than 2 or else decrease the count
       if (userCart.cartItems[itemIndex].shoeCount < 2) {
+        removeItemCompletely = true;
         userCart.cartItems = userCart.cartItems.filter(
           (o) => o.shoe.toString() !== productId,
         );
@@ -412,7 +413,17 @@ const removeFromCart = async (req, res, next) => {
 
     await userCart.save();
 
-    res.status(200).json({ userCart });
+    if (removeItemCompletely) {
+      res.status(200).json({
+        product: { shoe: productId },
+        removeItemCompletely: removeItemCompletely,
+      });
+    } else {
+      res.status(200).json({
+        product: userCart.cartItems[itemIndex],
+        removeItemCompletely: removeItemCompletely,
+      });
+    }
   } catch (error) {
     next(error);
   }
