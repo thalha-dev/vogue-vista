@@ -440,8 +440,6 @@ export const removeFromCart = createAsyncThunk(
         },
       );
 
-      await dispatch(getAllShoesFromCart());
-
       return response.data;
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -463,8 +461,6 @@ export const removeFromCart = createAsyncThunk(
               withCredentials: true,
             },
           );
-
-          await dispatch(getAllShoesFromCart());
 
           return response.data;
         } catch (refreshError) {
@@ -850,6 +846,14 @@ const shoeSlice = createSlice({
           }
         }
 
+        let totalAmount = 0;
+
+        state.cart.cartItems.forEach((ob) => {
+          totalAmount += Number(ob.shoe.shoePrice) * Number(ob.shoeCount);
+        });
+
+        state.cartTotalAmount = totalAmount;
+
         state.addToCartStatus = "success";
         state.errorMessage = null;
       })
@@ -863,7 +867,30 @@ const shoeSlice = createSlice({
         state.removeFromCartStatus = "loading";
         state.errorMessage = null;
       })
-      .addCase(removeFromCart.fulfilled, (state) => {
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        const product = action.payload?.product;
+        const removeItemCompletely = action.payload?.removeItemCompletely;
+
+        if (removeItemCompletely) {
+          state.cart.cartItems = state.cart.cartItems.filter(
+            (ob) => ob.shoe._id !== product.shoe,
+          );
+        } else {
+          for (let i = 0; i < state.cart.cartItems.length; i++) {
+            if (state.cart.cartItems[i].shoe._id === product.shoe) {
+              state.cart.cartItems[i].shoeCount = product.shoeCount;
+            }
+          }
+        }
+
+        let totalAmount = 0;
+
+        state.cart.cartItems.forEach((ob) => {
+          totalAmount += Number(ob.shoe.shoePrice) * Number(ob.shoeCount);
+        });
+
+        state.cartTotalAmount = totalAmount;
+
         state.removeFromCartStatus = "success";
         state.errorMessage = null;
       })
