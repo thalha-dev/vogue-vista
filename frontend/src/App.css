@@ -1653,6 +1653,10 @@ body {
 /*                     ADMIN PRODUCTS VIEW PAGE                      */
 /* ***************************************************************** */
 
+.admin-prducts-container h2 {
+  text-align: center;
+}
+
 .admin-products-display-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
