@@ -1106,6 +1106,10 @@ body {
   color: var(--dark-1);
 }
 
+.Toastify__toast-container {
+  z-index: 10002;
+}
+
 @media (min-width: 480px) {
   .admin-layout-navbar {
     font-size: 0.9rem;
