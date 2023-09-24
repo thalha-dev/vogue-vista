@@ -28,6 +28,7 @@ import {
   getAdminRoleStatusCB,
   getLoginStatusCB,
 } from "../state/slice/userSlice";
+import UpdateShoe from "./components/UpdateShoe";
 
 function App() {
   const loginStatus = useSelector(getLoginStatusCB);
@@ -98,6 +99,16 @@ function App() {
             element={
               loginStatus === "success" && adminStatus ? (
                 <ProductsAdminView />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="updateShoe/:shoeId"
+            element={
+              loginStatus === "success" && adminStatus ? (
+                <UpdateShoe />
               ) : (
                 <Login />
               )

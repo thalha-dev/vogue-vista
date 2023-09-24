@@ -1220,6 +1220,7 @@ body {
   color: var(--light-1);
   font-size: 1rem;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .upload-shoe-submit-button:hover,

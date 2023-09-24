@@ -65,9 +65,15 @@ const ProductsAdminView = () => {
                 <RxStarFilled />
                 {shoe.shoeRating}
               </span>
-              <button className="admin-product-edit-button">
-                <AiFillEdit className="admin-product-edit-button-pencil" />
-              </button>
+
+              <Link
+                className="admin-product-link"
+                to={`/adminspace/updateShoe/${shoe._id}`}
+              >
+                <button className="admin-product-edit-button">
+                  <AiFillEdit className="admin-product-edit-button-pencil" />
+                </button>
+              </Link>
             </div>
           </div>
           <Link
