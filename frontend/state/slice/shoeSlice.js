@@ -379,8 +379,6 @@ export const addToCart = createAsyncThunk(
         },
       );
 
-      await dispatch(getAllShoesFromCart());
-
       return response.data;
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -401,8 +399,6 @@ export const addToCart = createAsyncThunk(
               withCredentials: true,
             },
           );
-
-          await dispatch(getAllShoesFromCart());
 
           return response.data;
         } catch (refreshError) {
@@ -834,7 +830,26 @@ const shoeSlice = createSlice({
         state.addToCartStatus = "loading";
         state.errorMessage = null;
       })
-      .addCase(addToCart.fulfilled, (state) => {
+      .addCase(addToCart.fulfilled, (state, action) => {
+        const product = action.payload?.product;
+        const newAddition = action.payload?.newAddition;
+
+        if (newAddition) {
+          const shoeFound = state.allShoes.find(
+            (shoe) => shoe._id === product.shoe,
+          );
+          state.cart.cartItems.push({
+            shoe: shoeFound,
+            shoeCount: product.shoeCount,
+          });
+        } else {
+          for (let i = 0; i < state.cart.cartItems.length; i++) {
+            if (state.cart.cartItems[i].shoe._id === product.shoe) {
+              state.cart.cartItems[i].shoeCount = product.shoeCount;
+            }
+          }
+        }
+
         state.addToCartStatus = "success";
         state.errorMessage = null;
       })
