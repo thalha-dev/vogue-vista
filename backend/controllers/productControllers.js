@@ -336,7 +336,20 @@ const addToCart = async (req, res, next) => {
 
     await userCart.save();
 
-    res.status(200).json({ userCart });
+    if (itemExistInCart) {
+      res.status(200).json({
+        product: userCart.cartItems[itemIndex],
+        newAddition: false,
+      });
+    } else {
+      res.status(200).json({
+        product: {
+          shoe: productId,
+          shoeCount: 1,
+        },
+        newAddition: true,
+      });
+    }
   } catch (error) {
     next(error);
   }
