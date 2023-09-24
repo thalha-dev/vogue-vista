@@ -282,6 +282,7 @@ const Home = () => {
                 type="number"
                 id="filter-min-price-input"
                 className="filter-min-price-input"
+                value={selectedPriceRange[0]}
                 onChange={(e) => {
                   setSelectedPriceRange((v) => [e.target.value, v[1]]);
                 }}
@@ -293,6 +294,7 @@ const Home = () => {
                 type="number"
                 id="filter-max-price-input"
                 className="filter-max-price-input"
+                value={selectedPriceRange[1]}
                 onChange={(e) => {
                   setSelectedPriceRange((v) => [v[0], e.target.value]);
                 }}

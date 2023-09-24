@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import modelImage from "../assets/landing-page-model.png";
 
 const LandingPage = () => {
   return (
@@ -17,7 +16,7 @@ const LandingPage = () => {
       <section className="landing-page-image-section">
         <img
           className="landing-page-model-image"
-          src={modelImage}
+          src="https://ik.imagekit.io/zwcqp6xk2mg/products/landing-page-model.png"
           alt="landing page image"
         />
       </section>
