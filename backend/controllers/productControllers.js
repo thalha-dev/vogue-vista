@@ -556,7 +556,7 @@ const getAllShoesFromWishList = async (req, res, next) => {
       .exec();
 
     if (!userWishList) {
-      throw createHttpError(404, "Nothing in the cart");
+      throw createHttpError(404, "Nothing in the wishlist");
     }
 
     res.status(200).json(userWishList);
