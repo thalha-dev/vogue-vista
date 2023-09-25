@@ -1804,3 +1804,15 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 }
+
+/* ***************************************************************** */
+/*                           NOT FOUND PAGE                          */
+/* ***************************************************************** */
+
+.not-found-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 85vh;
+  text-align: center;
+}

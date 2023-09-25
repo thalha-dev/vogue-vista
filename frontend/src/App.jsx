@@ -29,6 +29,7 @@ import {
   getLoginStatusCB,
 } from "../state/slice/userSlice";
 import UpdateShoe from "./components/UpdateShoe";
+import NotFound from "./components/NotFound";
 
 function App() {
   const loginStatus = useSelector(getLoginStatusCB);
@@ -115,6 +116,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>,
     ),
   );
