@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-  console.log(error);
+  // console.log(error);
   let errorMessage = "An Unknown Error Occured";
   let statusCode = 500;
   if (isHttpError(error)) {
