@@ -10,18 +10,19 @@ import {
   errorMessageCB,
   errorMessageFromCB,
   getAllShoes,
+  getIsOutOfStockStatusCB,
 } from "../../state/slice/shoeSlice";
 import { getLoginStatusCB } from "../../state/slice/userSlice";
 import { useEffect, useState } from "react";
 import { numberToInr } from "../utils/utils";
 
 const ProductsAdminView = () => {
-  const [isProdcutOutOfStock, setIsProdcutOutOfStock] = useState(false);
   const allshoes = useSelector(allShoesCB);
   const allShoesStatus = useSelector(allShoesStatusCB);
   const errorMessage = useSelector(errorMessageCB);
   const loginStatus = useSelector(getLoginStatusCB);
   const errorMessageFrom = useSelector(errorMessageFromCB);
+  const isOutOfStock = useSelector(getIsOutOfStockStatusCB);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,7 +41,6 @@ const ProductsAdminView = () => {
       .filter((shoe) => {
         if (outOfStock) {
           if (shoe.shoesAvailable === 0) {
-            setIsProdcutOutOfStock(true);
             return true;
           }
         } else {
@@ -100,15 +100,13 @@ const ProductsAdminView = () => {
 
   return (
     <div className="admin-prducts-container">
-      {isProdcutOutOfStock ? (
+      {isOutOfStock && (
         <>
           <h2>Products Out of Stock</h2>
           <section className=" admin-products-display-section">
             {allShoesStatus && renderShoes(allshoes, true)}
           </section>
         </>
-      ) : (
-        ""
       )}
       <h2>Products In Stock</h2>
       <section className=" admin-products-display-section">

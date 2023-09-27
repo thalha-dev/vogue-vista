@@ -14,6 +14,7 @@ const initialState = {
   cartTotalAmount: null,
   errorMessage: null,
   errorMessageFrom: "",
+  isOutOfStock: false,
   //possible values: [ idle, loading, success, failed ]
   allShoesStatus: "idle",
   wishListStatus: "idle",
@@ -747,6 +748,12 @@ const shoeSlice = createSlice({
           if (shoe?.shoeSize) {
             sizesSet.add(shoe.shoeSize);
           }
+
+          // check for out of stock products
+
+          if (shoe.shoesAvailable === 0) {
+            state.isOutOfStock = true;
+          }
         });
 
         state.shoeBrands = [...brandsSet];
@@ -1019,6 +1026,7 @@ export const removeFromCartStatusCB = (state) =>
 export const getSingleShoeStatusCB = (state) => state.shoe.singleShoeStatus;
 export const getShoeBrandsCB = (state) => state.shoe.shoeBrands;
 export const getShoeColorsCB = (state) => state.shoe.shoeColors;
+export const getIsOutOfStockStatusCB = (state) => state.shoe.isOutOfStock;
 export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
 export const errorMessageCB = (state) => state.shoe.errorMessage;
 export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
