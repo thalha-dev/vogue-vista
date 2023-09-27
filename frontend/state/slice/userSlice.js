@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../axiosBase/api";
 import jwt_decode from "jwt-decode";
+import { clearProductDetails } from "./shoeSlice";
 
 const initialState = {
   token: null,
@@ -66,20 +67,24 @@ export const refreshAccessToken = createAsyncThunk(
   },
 );
 
-export const logout = createAsyncThunk("user/logout", async () => {
-  try {
-    const response = await api.get("/api/users/logout", {
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    const errorMessage = error.response?.data?.error;
-    if (errorMessage) {
-      throw new Error(errorMessage);
+export const logout = createAsyncThunk(
+  "user/logout",
+  async (_, { getState, dispatch }) => {
+    try {
+      const response = await api.get("/api/users/logout", {
+        withCredentials: true,
+      });
+      dispatch(clearProductDetails());
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      }
+      throw error;
     }
-    throw error;
-  }
-});
+  },
+);
 
 const userSlice = createSlice({
   name: "user",

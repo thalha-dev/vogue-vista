@@ -690,6 +690,30 @@ const shoeSlice = createSlice({
       state.addToCartStatus = "idle";
       state.errorMessageFrom = "";
     },
+    clearProductDetails: (state) => {
+      state.allShoes = [];
+      state.wishList = [];
+      state.cart = [];
+      state.orders = [];
+      state.shoeBrands = [];
+      state.shoeSizes = [];
+      state.shoeColors = [];
+      state.singleShoe = {};
+      state.cartTotalAmount = null;
+      state.errorMessage = null;
+      state.errorMessageFrom = "";
+      state.allShoesStatus = "idle";
+      state.wishListStatus = "idle";
+      state.cartStatus = "idle";
+      state.getUserOrdersStatus = "idle";
+      state.addToWishListStatus = "idle";
+      state.addToCartStatus = "idle";
+      state.removeFromWishListStatus = "idle";
+      state.removeFromCartStatus = "idle";
+      state.uploadNewShoeStatus = "idle";
+      state.updateShoeStatus = "idle";
+      state.singleShoeStatus = "idle";
+    },
     clearStatus: (state, action) => {
       state[action.payload] = "idle";
       state.errorMessageFrom = "";
@@ -999,7 +1023,11 @@ export const getshoeSizesCB = (state) => state.shoe.shoeSizes;
 export const errorMessageCB = (state) => state.shoe.errorMessage;
 export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
 
-export const { clearStatus, clearAddToCartStatus, clearAddToWishListStatus } =
-  shoeSlice.actions;
+export const {
+  clearProductDetails,
+  clearStatus,
+  clearAddToCartStatus,
+  clearAddToWishListStatus,
+} = shoeSlice.actions;
 
 export default shoeSlice.reducer;
