@@ -994,6 +994,16 @@ const shoeSlice = createSlice({
 
         state.shoeSizes.push(updatedShoe.shoeSize);
 
+        let productSOutOfStock = false;
+
+        state.allShoes.forEach((shoe) => {
+          if (shoe.shoesAvailable === 0) {
+            productSOutOfStock = true;
+          }
+        });
+
+        state.isOutOfStock = productSOutOfStock;
+
         state.updateShoeStatus = "success";
         state.errorMessage = null;
       })
