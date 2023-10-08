@@ -719,6 +719,22 @@ const shoeSlice = createSlice({
       state[action.payload] = "idle";
       state.errorMessageFrom = "";
     },
+    clearState: (state, action) => {
+      if (
+        typeof state[action.payload] === "object" &&
+        !Array.isArray(state[action.payload]) &&
+        state[action.payload] !== null
+      ) {
+        state[action.payload] = {};
+      } else if (Array.isArray(state[action.payload])) {
+        state[action.payload] = [];
+      } else if (typeof state[action.payload] === "string") {
+        state[action.payload] = "";
+      } else if (typeof state[action.payload] === "number") {
+        state[action.payload] = null;
+      }
+    },
+
     clearAddToWishListStatus: (state) => {
       state.addToWishListStatus = "idle";
       state.errorMessageFrom = "";
@@ -1044,6 +1060,7 @@ export const errorMessageFromCB = (state) => state.shoe.errorMessageFrom;
 export const {
   clearProductDetails,
   clearStatus,
+  clearState,
   clearAddToCartStatus,
   clearAddToWishListStatus,
 } = shoeSlice.actions;

@@ -8,7 +8,11 @@ import {
   getLoginStatusCB,
   logout,
 } from "../../../state/slice/userSlice";
-import { getAllShoes } from "../../../state/slice/shoeSlice";
+import {
+  getAllShoes,
+  getAllShoesFromCart,
+  getAllShoesFromWishList,
+} from "../../../state/slice/shoeSlice";
 
 const NavbarLayout = () => {
   const [toggleValue, setToggleValue] = useState(false);
@@ -17,8 +21,11 @@ const NavbarLayout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // initial fetch
     if (loginStatus === "success") {
       dispatch(getAllShoes());
+      dispatch(getAllShoesFromCart());
+      dispatch(getAllShoesFromWishList());
     }
   }, [loginStatus]);
 

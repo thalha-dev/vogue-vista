@@ -10,9 +10,9 @@ import {
   singleShoeCB,
   addToCartStatusCB,
   clearAddToCartStatus,
+  clearState,
 } from "../../state/slice/shoeSlice";
 import { HiStar } from "react-icons/hi";
-import { TbCurrencyRupee } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { numberToInr } from "../utils/utils";
 
@@ -27,6 +27,9 @@ const SingleProduct = () => {
 
   useEffect(() => {
     dispatch(getSingleShoe({ shoeId: id }));
+    return () => {
+      dispatch(clearState("singleShoe"));
+    };
   }, []);
 
   useEffect(() => {
@@ -43,9 +46,15 @@ const SingleProduct = () => {
   };
 
   const handleNotify = (message, cause) => {
-    toast.error(message);
+    if (cause === "addToCartSuccess") {
+      toast.success(message);
+      setTimeout(() => {
+        dispatch(clearAddToCartStatus());
+      }, 500);
+    }
 
     if (cause === "addToCartFalied") {
+      toast.error(message);
       setTimeout(() => {
         dispatch(clearAddToCartStatus());
       }, 500);
@@ -139,6 +148,8 @@ const SingleProduct = () => {
       {addToCartStatus === "failed" &&
         errorMessageFrom === "addToCart" &&
         handleNotify(errorMessage, "addToCartFalied")}
+      {addToCartStatus === "success" &&
+        handleNotify("Added to Cart", "addToCartSuccess")}
     </div>
   );
 };

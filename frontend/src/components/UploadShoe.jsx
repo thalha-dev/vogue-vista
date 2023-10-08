@@ -123,6 +123,7 @@ const UploadShoe = () => {
               setShoeGenderCategory(e.target.value);
             }}
           >
+            <option value="">Not Selected</option>
             <option value="men">Men</option>
             <option value="women">Women</option>
           </select>
