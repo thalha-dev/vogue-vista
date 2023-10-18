@@ -39,83 +39,90 @@ const NavbarLayout = () => {
 
   return (
     <>
-      <header className="site-header">
-        <NavLink className="site-title" to="/">
-          <h2>Vogue Vista</h2>
-        </NavLink>
+      <div className="site-content">
+        <header className="site-header">
+          <NavLink className="site-title" to="/">
+            <h2>Vogue Vista</h2>
+          </NavLink>
 
-        <button
-          className={`nav-btn ${toggleValue ? "position-fixed" : ""}`}
-          onClick={handleToggle}
-        >
-          {toggleValue ? <GrClose /> : <BiMenu />}
-        </button>
-        <div className={`nav-container ${toggleValue ? "btn-toggle" : ""}`}>
-          <nav className="site-nav">
-            <ul>
-              {loginStatus === "success" ? (
-                <li>
-                  <NavLink to="/home">Home</NavLink>
-                </li>
-              ) : (
-                ""
-              )}
-              {loginStatus === "success" ? (
-                <li>
-                  <NavLink to="/wishlist">Wish List</NavLink>
-                </li>
-              ) : (
-                ""
-              )}
-              {loginStatus === "success" ? (
-                <li>
-                  <NavLink to="/orders">Orders</NavLink>
-                </li>
-              ) : (
-                ""
-              )}
-              {loginStatus === "success" ? (
-                <li>
-                  <NavLink to="/cart">Cart</NavLink>
-                </li>
-              ) : (
-                ""
-              )}
-              {loginStatus === "success" && isAdmin ? (
-                <li>
-                  <NavLink to="/adminspace">Admin</NavLink>
-                </li>
-              ) : (
-                ""
-              )}
-              {loginStatus === "success" ? (
-                ""
-              ) : (
-                <li>
-                  <NavLink to="/login">Login</NavLink>
-                </li>
-              )}
-              {loginStatus === "success" ? (
-                ""
-              ) : (
-                <li>
-                  <NavLink to="/signup">Signup</NavLink>
-                </li>
-              )}
-              {loginStatus === "success" ? (
-                <li>
-                  <Link onClick={handleLogout} to="/">
-                    Logout
-                  </Link>
-                </li>
-              ) : (
-                ""
-              )}
-            </ul>
-          </nav>
+          <button
+            className={`nav-btn ${toggleValue ? "position-fixed" : ""}`}
+            onClick={handleToggle}
+          >
+            {toggleValue ? <GrClose /> : <BiMenu />}
+          </button>
+          <div className={`nav-container ${toggleValue ? "btn-toggle" : ""}`}>
+            <nav className="site-nav">
+              <ul>
+                {loginStatus === "success" ? (
+                  <li>
+                    <NavLink to="/home">Home</NavLink>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {loginStatus === "success" ? (
+                  <li>
+                    <NavLink to="/wishlist">Wish List</NavLink>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {loginStatus === "success" ? (
+                  <li>
+                    <NavLink to="/orders">Orders</NavLink>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {loginStatus === "success" ? (
+                  <li>
+                    <NavLink to="/cart">Cart</NavLink>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {loginStatus === "success" && isAdmin ? (
+                  <li>
+                    <NavLink to="/adminspace">Admin</NavLink>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {loginStatus === "success" ? (
+                  ""
+                ) : (
+                  <li>
+                    <NavLink to="/login">Login</NavLink>
+                  </li>
+                )}
+                {loginStatus === "success" ? (
+                  ""
+                ) : (
+                  <li>
+                    <NavLink to="/signup">Signup</NavLink>
+                  </li>
+                )}
+                {loginStatus === "success" ? (
+                  <li>
+                    <Link onClick={handleLogout} to="/">
+                      Logout
+                    </Link>
+                  </li>
+                ) : (
+                  ""
+                )}
+              </ul>
+            </nav>
+          </div>
+        </header>
+        <Outlet />
+      </div>
+      <footer className="site-footer">
+        <div>
+          <p>&copy; 2023 Vogue Vista</p>
         </div>
-      </header>
-      <Outlet />
+      </footer>
     </>
   );
 };

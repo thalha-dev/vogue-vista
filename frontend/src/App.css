@@ -1816,3 +1816,23 @@ body {
   height: 85vh;
   text-align: center;
 }
+
+/* ***************************************************************** */
+/*                              FOOTER                               */
+/* ***************************************************************** */
+.site-content {
+  min-height: 100vh;
+}
+
+.site-footer {
+  position: sticky;
+  top: 100%;
+}
+
+.site-footer div {
+  text-align: center;
+}
+
+.site-footer p {
+  font-size: 0.8rem;
+}
