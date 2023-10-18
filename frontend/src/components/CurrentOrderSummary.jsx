@@ -72,14 +72,18 @@ const CurrentOrderSummary = () => {
         ></textarea>
         {orderType === "single" ? (
           <Link
-            className="order-summary-proceed-to-pay-link"
+            className={`order-summary-proceed-to-pay-link ${
+              deliveryAddress ? "" : "link-unclickable"
+            }`}
             to={`/payment/${singleShoe._id}/single/${deliveryAddress}`}
           >
             Proceed to Pay
           </Link>
         ) : (
           <Link
-            className="order-summary-proceed-to-pay-link"
+            className={`order-summary-proceed-to-pay-link ${
+              deliveryAddress ? "" : "link-unclickable"
+            }`}
             to={`/payment/${cart._id}/cart/${deliveryAddress}`}
           >
             Proceed to Pay
