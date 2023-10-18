@@ -66,7 +66,7 @@ const CurrentOrderSummary = () => {
         <h3>Enter the Delivery Address </h3>
         <textarea
           onChange={(e) => {
-            setDeliveryAddress(e.target.value);
+            setDeliveryAddress(e.target.value.replace("/", " by "));
           }}
           className="order-summary-delivery-address-textarea"
         ></textarea>
