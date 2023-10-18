@@ -10,7 +10,7 @@ import {
   singleShoeCB,
   addToCartStatusCB,
   clearAddToCartStatus,
-  clearState,
+  clearImagesInSingleProductPage,
 } from "../../state/slice/shoeSlice";
 import { HiStar } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -28,12 +28,12 @@ const SingleProduct = () => {
   useEffect(() => {
     dispatch(getSingleShoe({ shoeId: id }));
     return () => {
-      dispatch(clearState("singleShoe"));
+      dispatch(clearImagesInSingleProductPage());
     };
   }, []);
 
   useEffect(() => {
-    singleShoe?.shoeImages &&
+    singleShoe?.shoeImages?.length > 0 &&
       setImageInDisplay(singleShoe.shoeImages[0].imageUrl);
   }, [singleShoe]);
 

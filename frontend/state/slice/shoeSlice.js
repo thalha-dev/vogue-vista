@@ -739,6 +739,9 @@ const shoeSlice = createSlice({
       state.addToWishListStatus = "idle";
       state.errorMessageFrom = "";
     },
+    clearImagesInSingleProductPage: (state) => {
+      state.singleShoe.shoeImages = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -1063,6 +1066,7 @@ export const {
   clearState,
   clearAddToCartStatus,
   clearAddToWishListStatus,
+  clearImagesInSingleProductPage,
 } = shoeSlice.actions;
 
 export default shoeSlice.reducer;
