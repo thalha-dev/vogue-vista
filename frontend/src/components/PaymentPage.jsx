@@ -7,8 +7,7 @@ import { toast } from "react-toastify";
 
 import api from "../../state/axiosBase/api";
 import {
-
-    getAccessTokenCB,
+  getAccessTokenCB,
   getIndividualIdCB,
   refreshAccessToken,
 } from "../../state/slice/userSlice";
@@ -30,7 +29,7 @@ const PaymentPage = () => {
             userId: userId,
             id: id,
             orderType: orderType,
-            deliveryAddress: deliveryAddress,
+            deliveryAddress: deliveryAddress.replace(/0by0/g, "/"),
           },
           {
             headers: {
